@@ -10,3 +10,6 @@ build/Tsukuyomi.a
 
 # escaped build files
 *.o
+
+# release
+include

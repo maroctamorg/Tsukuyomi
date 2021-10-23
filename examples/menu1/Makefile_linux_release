@@ -1,0 +1,29 @@
+CC = g++
+CFLAGS = -std=c++17
+INCLUDE = -I/usr/include/Tsukuyomi/ `sdl2-config --cflags --libs`
+LINKER_FLAGS = /usr/lib/Tsukuyomi/Tsukuyomi.a -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -pthread
+SOURCES = main.cpp ui/menu1.cpp
+SOURCE_OBJECT_FILES = $(shell basename -a ${SOURCES:.cpp=.o})
+TARGET = menu1
+
+all: build run
+
+build: compile link
+
+compile:
+	@echo "\nCompiling App..."
+	${CC} -c $(patsubst %, src/%, $(SOURCES)) ${INCLUDE} ${CFLAGS}
+	mv ${SOURCE_OBJECT_FILES} build/
+
+link:
+	@echo "\nLinking App..."
+	${CC} -o ${TARGET} $(patsubst %, build/%, ${SOURCE_OBJECT_FILES}) $(patsubst %, build/lib/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/lib/ui/%, ${LIB_UI_OBJECT_FILES}) ${LINKER_FLAGS}
+	mv ${TARGET} build/
+
+run:
+	@echo "\nRunning App..."
+	build/${TARGET}
+
+cleanup:
+	@echo "\nCleaning up App..."
+	rm $(patsubst %, build/%, ${SOURCE_OBJECT_FILES})
