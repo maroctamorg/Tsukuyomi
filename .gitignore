@@ -1,0 +1,9 @@
+# unwanted hidden files
+.*
+!.gitignore
+
+# platform-specific files
+Makefile
+
+# escaped build files
+*.o
