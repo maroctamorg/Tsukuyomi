@@ -2,15 +2,15 @@ CC = g++
 CFLAGS = -std=c++17
 FRAMEWORKS = -F/Library/Frameworks
 LINKER_FLAGS = -F/Library/Frameworks/ -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer
-LIB_GRAPH_SOURCES = $(patsubst %, engine/graphics/%, graphics_context.cpp image.cpp rectangles.cpp text.cpp)
+LIB_GRAPH_SOURCES = $(patsubst %, graphics/%, graphics_context.cpp image.cpp rectangles.cpp text.cpp)
 LIB_GRAPH_OBJECT_FILES = $(shell basename -a ${LIB_GRAPH_SOURCES:.cpp=.o})
-LIB_UI_SOURCES = $(patsubst %, engine/ui/%, text.cpp event.cpp button.cpp input.cpp layout.cpp menu.cpp pannel.cpp ui_element.cpp)
+LIB_UI_SOURCES = $(patsubst %, ui/%, text.cpp event.cpp button.cpp input.cpp layout.cpp menu.cpp pannel.cpp ui_element.cpp)
 LIB_UI_OBJECT_FILES = $(shell basename -a ${LIB_UI_SOURCES:.cpp=.o})
-TARGET = Tsukuyomi
+TARGET = Tsukuyomi.a
 
-all: build_all run
+all: build link
 
-build_all: build_lib_graph build_lib_ui link
+build: build_lib_graph build_lib_ui link
 
 build_lib_graph:
 	@echo "\nBuilding GRAPHICS library..."
@@ -24,10 +24,9 @@ build_lib_ui:
 
 link:
 	@echo "\nLinking App..."
-	${CC} -o ${TARGET} $(patsubst %, build/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/ui/%, ${LIB_UI_OBJECT_FILES}) ${LINKER_FLAGS}
+	ar rs ${TARGET} $(patsubst %, build/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/ui/%, ${LIB_UI_OBJECT_FILES})
 	mv ${TARGET} build/
 
 cleanup:
 	@echo "\nCleaning up..."
-	rm $(patsubst %, build/graph/%, ${LIB_GRAPH_OBJECT_FILES})
-	rm $(patsubst %, build/ui/%, ${LIB_UI_OBJECT_FILES})
+	rm $(patsubst %, build/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/ui/%, ${LIB_UI_OBJECT_FILES})

@@ -5,5 +5,8 @@
 # platform-specific files
 Makefile
 
+# build
+build/Tsukuyomi.a
+
 # escaped build files
 *.o

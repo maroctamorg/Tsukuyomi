@@ -26,18 +26,19 @@ void UI_Element::render() {
         // SDL_RenderCopy(texture, )
     }
     else if(color.a != 0 && !hidden) {
-        if(r < 1) {
-            SDL_SetRenderDrawColor(context->renderer, color.r, color.g, color.b, color.a);
-            SDL_RenderFillRect(context->renderer, &(this->rect));
+        // if(r < 1) {
+        //     SDL_SetRenderDrawColor(context->renderer, color.r, color.g, color.b, color.a);
+        //     SDL_RenderFillRect(context->renderer, &(this->rect));
 
-            if(border_color.a != 0) {
-                SDL_SetRenderDrawColor(context->renderer, border_color.r, border_color.g, border_color.b, border_color.a);
-                SDL_RenderDrawRect(context->renderer, &(this->rect));
-            }
+        //     if(border_color.a != 0) {
+        //         SDL_SetRenderDrawColor(context->renderer, border_color.r, border_color.g, border_color.b, border_color.a);
+        //         SDL_RenderDrawRect(context->renderer, &(this->rect));
+        //     }
 
-            return;
-        }
+        //     return;
+        // }
 
-        drawCutRect(context->renderer, this->rect, this->color, this->border_color, r, shadow);
+        drawRoundedRect(context->renderer, this->rect, this->color, this->border_color, 5, true);
+
     }
 }
