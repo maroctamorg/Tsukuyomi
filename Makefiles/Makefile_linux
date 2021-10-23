@@ -15,18 +15,18 @@ build_all: build_lib_graph build_lib_ui link
 build_lib_graph:
 	@echo "\nBuilding GRAPHICS library..."
 	${CC} -c $(patsubst %, src/%, $(LIB_GRAPH_SOURCES)) ${INCLUDE} ${CFLAGS}
-	mv ${LIB_GRAPH_OBJECT_FILES} build/lib/graph/
+	mv ${LIB_GRAPH_OBJECT_FILES} build/graph/
 
 build_lib_ui:
 	@echo "\nBuilding UI library..."
 	${CC} -c $(patsubst %, src/%, $(LIB_UI_SOURCES)) ${INCLUDE} ${CFLAGS}
-	mv ${LIB_UI_OBJECT_FILES} build/lib/ui/
+	mv ${LIB_UI_OBJECT_FILES} build/ui/
 
 link:
 	@echo "\nLinking App..."
-	${CC} -o ${TARGET} $(patsubst %, build/lib/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/lib/ui/%, ${LIB_UI_OBJECT_FILES}) ${LINKER_FLAGS}
+	${CC} -o ${TARGET} $(patsubst %, build/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/ui/%, ${LIB_UI_OBJECT_FILES}) ${LINKER_FLAGS}
 	mv ${TARGET} build/
 
 cleanup:
 	@echo "\nCleaning up..."
-	rm $(patsubst %, build/lib/%, ${LIB_GRAPH_OBJECT_FILES} ${LIB_UI_OBJECT_FILES})
+	rm $(patsubst %, build/%, ${LIB_GRAPH_OBJECT_FILES} ${LIB_UI_OBJECT_FILES})
