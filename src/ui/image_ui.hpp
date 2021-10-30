@@ -1,6 +1,6 @@
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 
 #endif

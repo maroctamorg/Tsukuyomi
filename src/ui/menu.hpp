@@ -1,7 +1,7 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 
 class Layout;
 class EventHandler;

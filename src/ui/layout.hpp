@@ -1,7 +1,7 @@
 #ifndef LAYOUT_HPP
 #define LAYOUT_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 #include "ui_element.hpp"
 
 enum class X_POS {

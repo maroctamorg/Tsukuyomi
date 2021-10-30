@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 #include "layout.hpp"
 
 class EventHandler;

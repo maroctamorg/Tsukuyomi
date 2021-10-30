@@ -1,4 +1,4 @@
-#include "text.hpp"
+#include "text_box.hpp"
 
 std::string TextBox::getText(){
     return this->contents;

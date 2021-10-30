@@ -1,8 +1,8 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
-#include "extern.hpp"
-#include "text.hpp"
+#include "extern_ui.hpp"
+#include "text_box.hpp"
 
 class EventHandler;
 

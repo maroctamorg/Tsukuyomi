@@ -1,7 +1,7 @@
 #ifndef PANNEL_HPP
 #define PANNEL_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 #include "ui_element.hpp"
 #include "layout.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef UI_ELEMENT_HPP
 #define UI_ELEMENT_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 
 enum GAME_STATE
 {

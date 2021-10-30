@@ -1,7 +1,7 @@
 #ifndef TEXT_UI_HPP
 #define TEXT_UI_HPP
 
-#include "extern.hpp"
+#include "extern_ui.hpp"
 #include "ui_element.hpp"
 
 class TextBox final : public UI_Element {
