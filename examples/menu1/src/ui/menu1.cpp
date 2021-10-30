@@ -26,7 +26,7 @@ const std::shared_ptr<Menu> Test_Menu::construct(std::shared_ptr<GraphicsContext
 
     std::string medium = "This is some medium-length text that is meant to test things out!";
     std::string large = "What follows is a long piece of text, meant to test out the TextBox class' adaptability functionality. Though this does not say much, it contains many words and occupies much space. The sophistic philosophers of Ancient Greece would most certainly be proud. I think this should be enough for the purposes of this text. If this is not the case, I will make sure to edit this so that the functionality is thoroughly tested.";
-    std::string font = "../resources/fonts/CourierNew.ttf";
+    std::string font = "resources/fonts/CourierNew.ttf";
     SDL_Color font_color { 255, 255, 255, 255 };
     
     // BUTTON
