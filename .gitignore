@@ -4,6 +4,7 @@
 
 # platform-specific files
 Makefile
+install.sh
 
 # build
 build/Tsukuyomi.a

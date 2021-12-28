@@ -66,7 +66,7 @@ const std::shared_ptr<Menu> Test_Menu::construct(std::shared_ptr<GraphicsContext
 
     text = std::make_shared<TextBox>(context, "Enter a username to join a random session...", font, 15, font_color, ALIGN_X::CENTER, ALIGN_Y::CENTER);
     pannel_layout->placeUI_Element(text, 2);
-    main_layout->placeUI_Element(std::make_shared<Pannel>(context, pannel_layout, SDL_Color({24, 43, 100, 255})), 0);
+    main_layout->placeUI_Element(std::make_shared<Pannel>(context, pannel_layout, SDL_Color({87, 95, 107, 255})), 0);
     // main_layout->placeUI_Element(new Pannel(context, nullptr, SDL_Color({24, 43, 100, 255})), 0);
     menu = std::make_shared<Menu>(context, handler, main_layout, SDL_Color({255, 255, 255, 255}));
     return menu;
