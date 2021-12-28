@@ -1,34 +1,44 @@
 #!/bin/bash
 
-#Ask user if they would like a user or system installation
-#Figure out best directories for static libraries
-
-SCRIPT=$(readlink -f "$0");
+SCRIPT=$(readlink "$0");
 SCRIPTPATH=$(dirname "$SCRIPT");
 cd ${SCRIPTPATH};
 
-if [[ -d ${HOME}/Library/Frameworks/SDL2.framework ]]
-then
-	INSTALL_PATH=${HOME}/Library/Frameworks/Tsukuyomi.framework;
-elif [[ -d /Library/Frameworks/SDL2.framework ]]
-then
-	INSTALL_PATH=${HOME}/Library/Frameworks/Tsukuyomi.framework;
-	
+#Ask user if they would like a user or system installation
+echo -e "Choose:\n[0]\tsystem installation (requires super user privileges)\n[1]\tuser installation";
+read choice;
+
+if [[ choice -eq 0 ]]; then
+	INSTALL_PATHS=(/usr/local/lib/Tsukuyomi ${HOME}/Library/Tsukuyomi)
+	SDL_INSTALL_PATH=/Library/Frameworks/SDL2.framework
+elif [[ choice -eq 1 ]]; then
+	INSTALL_PATHS=(${HOME}/Library/Tsukuyomi)
+	SDL_INSTALL_PATH=${HOME}/Library/Frameworks/SDL2.framework
 else
-	echo "SDL2 dependency not found, attempting install into" ${HOME}/Library/Frameworks/SDL2.framework
+	echo "Please choose an appropriate installation (0 or 1)...";
+	exit $?;
+fi
+
+# must also look for audio and mixer frameworks
+if [[ !( -d ${HOME}/Library/Frameworks/SDL2.framework || -d /Library/Frameworks/SDL2.framework ) ]]; then
+	echo "SDL2 dependency not found, attempting install into" SDL_INSTALL_PATH;
 	wget "https://www.libsdl.org/release/SDL2-2.0.18.dmg";
-	mount -t SDL2-2.0.18.dmg SDL2; # what type?
-	cp SDL2/SDL2.framework ${HOME}/Library/Frameworks/SDL2.framework;
-	umount SDL2;
-	rm SDL2-2.0.18.dmg;
-	INSTALL_PATH=${HOME}/Library/Frameworks/Tsukuyomi.framework;
+	hdiutil mount SDL2;
+	cp /Volumes/SDL2/SDL2.framework SDL_INSTALL_PATH;
+	hdiutil unmount /Volumes/SDL2 &
+	mv SDL2-2.0.18.dmg ${HOME}/Downloads;
 fi
 
 cp Makefiles/Makefile_macOS Makefile;
 make;
-mkdir ${INSTALL_PATH};
-cp build/Tsukuyomi.a ${INSTALL_PATH}/;
-mkdir ${INSTALL_PATH}/include;
-cp -r src ${INSTALL_PATH}/include/;
-
-echo -e "Successful installation\nInstall location:" ${INSTALL_PATH};
+for path in ${INSTALL_PATHS[@]}; do
+	mkdir ${path};
+	cp build/Tsukuyomi.a ${path}/;
+	if [[ choice -eq 0 ]]; then
+		sudo mkdir ${path}/include;
+	else
+		mkdir ${path}/include;
+	fi
+	cp -r src/ ${path}/include/;
+	echo -e "Successful installation\nInstall location:" ${path};
+done

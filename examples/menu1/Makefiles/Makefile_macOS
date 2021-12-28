@@ -1,35 +1,16 @@
 CC = g++
 CFLAGS = -std=c++17
-INCLUDE = -I${HOME}/Library/include/asio-1.18.2/include
-FRAMEWORKS = -F/Library/Frameworks
-LINKER_FLAGS = -F/Library/Frameworks/ -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer
-LIB_GRAPH_SOURCES = $(patsubst %, engine/graphics/%, graphics_context.cpp image.cpp rectangles.cpp text.cpp)
-LIB_GRAPH_OBJECT_FILES = $(shell basename -a ${LIB_GRAPH_SOURCES:.cpp=.o})
-LIB_UI_SOURCES = $(patsubst %, engine/ui/%, text.cpp event.cpp button.cpp input.cpp layout.cpp menu.cpp pannel.cpp ui_element.cpp)
-LIB_UI_OBJECT_FILES = $(shell basename -a ${LIB_UI_SOURCES:.cpp=.o})
-SOURCES = main.cpp ui/test_menu.cpp engine/game/pong.cpp services/client.cpp
+INCLUDE = -I${HOME}/Library/Tsukuyomi/include -I${HOME}/Library/include/asio-1.18.2/include -F/Library/Frameworks/
+LINKER_FLAGS = -F/Library/Frameworks/ -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer ${HOME}/Library/Tsukuyomi/Tsukuyomi.a
+SOURCES = main.cpp ui/menu1.cpp
 SOURCE_OBJECT_FILES = $(shell basename -a ${SOURCES:.cpp=.o})
-TARGET = pong_client
-
-all: build_all run
-
-build_all: build_lib_graph build_lib_ui compile link
-
-build_lib_graph:
-	@echo "\nBuilding GRAPHICS library..."
-	${CC} -c $(patsubst %, src/%, $(LIB_GRAPH_SOURCES)) ${FRAMEWORKS} ${CFLAGS}
-	mv ${LIB_GRAPH_OBJECT_FILES} build/lib/graph/
-
-build_lib_ui:
-	@echo "\nBuilding UI library..."
-	${CC} -c $(patsubst %, src/%, $(LIB_UI_SOURCES)) ${FRAMEWORKS} ${CFLAGS}
-	mv ${LIB_UI_OBJECT_FILES} build/lib/ui/
+TARGET = menu1
 
 build: compile link
 
 compile:
 	@echo "\nCompiling App..."
-	${CC} -c $(patsubst %, src/%, $(SOURCES)) ${INCLUDE} ${FRAMEWORKS} ${CFLAGS}
+	${CC} -c $(patsubst %, src/%, $(SOURCES)) ${INCLUDE} ${CFLAGS}
 	mv ${SOURCE_OBJECT_FILES} build/
 
 link:
@@ -41,13 +22,6 @@ run:
 	@echo "\nRunning App..."
 	build/${TARGET}
 
-cleanup_all: cleanup cleanup_lib
-
 cleanup:
 	@echo "\nCleaning up App..."
 	rm $(patsubst %, build/%, ${SOURCE_OBJECT_FILES})
-
-cleanup_lib:
-	@echo "\nCleaning up libraries..."
-	rm $(patsubst %, build/lib/graph/%, ${LIB_GRAPH_OBJECT_FILES})
-	rm $(patsubst %, build/lib/ui/%, ${LIB_UI_OBJECT_FILES})

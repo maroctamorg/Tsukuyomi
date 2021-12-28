@@ -1,7 +1,7 @@
 #ifndef TEST_MENU_HPP
 #define TEST_MENU_HPP
 
-#include "Tsukuyomi/ui/Tsukuyomi.hpp"
+#include "ui/Tsukuyomi.hpp"
 
 class Test_Menu {
 public:
