@@ -6,11 +6,11 @@ typedef struct {
 } Start_Game_Info;
 
 int main() {
-    std::shared_ptr<GraphicsContext> g_context = std::make_shared<GraphicsContext>(800, 600);
-    std::cout << "Succesfully initialised graphicsContext!\n";
+    std::shared_ptr<Graphics_Context> g_context = std::make_shared<Graphics_Context>(800, 600);
+    std::cout << "Succesfully initialised Graphics_Context!\n";
 
     bool done {false};
-    std::shared_ptr<EventHandler> handler { std::make_shared<EventHandler>() };
+    std::shared_ptr<Event_Handler> handler { std::make_shared<Event_Handler>() };
     std::shared_ptr<Menu> test_menu = Test_Menu::construct(g_context, handler);
 
     Event event;
@@ -22,7 +22,7 @@ int main() {
 
         // test_menu->update();
         // SDL_PollEvent(&event);
-        event = handler->PollEvent();
+        event = handler->pollEvent();
         if(event.type == EVENT_TYPES::UNHANDLED_SDL_EVENT) {
             switch (event.sdl_event.type) {
                 case (SDL_QUIT): {

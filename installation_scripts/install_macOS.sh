@@ -39,6 +39,8 @@ for path in ${INSTALL_PATHS[@]}; do
 	else
 		mkdir ${path}/include;
 	fi
-	cp -r src/ ${path}/include/;
+	cd src/;
+	find . -name '*.hpp' | cpio -updm ${path}/include/;
+	cd ../
 	echo -e "Successful installation\nInstall location:" ${path};
 done

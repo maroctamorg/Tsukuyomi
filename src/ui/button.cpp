@@ -1,7 +1,7 @@
 #include "button.hpp"
 #include "event.hpp"
 
-Button::Button(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::shared_ptr<Layout> layout, const unsigned int id, bool active, bool select, SDL_Color color, SDL_Rect rect)
+Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, std::shared_ptr<Layout> layout, const unsigned int id, bool active, bool select, SDL_Color color, SDL_Rect rect)
     :   UI_Element(context, rect, color), handler(handler), layout(layout), id { id }, state { active, select, false, false } {
         // std::cout << "Button state on initialization:\nactive: " << state.active << "\tselect: " << state.select << '\n';
         if(this->layout)
@@ -9,7 +9,7 @@ Button::Button(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHa
         if(this->handler)
             this->handler->registerButtonToHandler(this);
     }
-Button::Button(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::shared_ptr<Layout> layout, const unsigned int id, bool active, bool select, SDL_Rect rect, SDL_Texture* a_texture)
+Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, std::shared_ptr<Layout> layout, const unsigned int id, bool active, bool select, SDL_Rect rect, SDL_Texture* a_texture)
     :   UI_Element(context, rect, a_texture), handler(handler), layout(layout), id { id }, state { active, select, false, false } {
         if(this->layout)
             this->layout->updatePosition(this->rect);
@@ -18,7 +18,7 @@ Button::Button(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHa
     }
 
 int Button::getId() { return id; }
-void Button::registerCallBack(std::function<void(const GraphicsContext&, const EventHandler&, Button&)> callback) {
+void Button::registerCallBack(std::function<void(const Graphics_Context&, const Input_Handler&, Button&)> callback) {
     this->callback = callback;
 }
 void Button::activate()     {   state.active    =   true;   }

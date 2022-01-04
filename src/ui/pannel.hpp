@@ -11,12 +11,12 @@ private:
 
 public:
     // Pannel() = default;
-    Pannel(std::shared_ptr<GraphicsContext> context, std::shared_ptr<Layout> layout, SDL_Rect rect, SDL_Texture* a_texture = nullptr)
+    Pannel(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Rect rect, SDL_Texture* a_texture = nullptr)
         :   UI_Element(context, rect, a_texture), layout(layout) {
             if(layout)
                 this->layout->updatePosition(this->rect);
         }
-    Pannel(std::shared_ptr<GraphicsContext> context, std::shared_ptr<Layout> layout, SDL_Color color = SDL_Color({0, 0, 0, 0}), SDL_Rect rect = SDL_Rect({0, 0, 0, 0}))
+    Pannel(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Color color = SDL_Color({0, 0, 0, 0}), SDL_Rect rect = SDL_Rect({0, 0, 0, 0}))
         : UI_Element(context, rect, color), layout(layout) {
             if(layout)
                 this->layout->updatePosition(this->rect);

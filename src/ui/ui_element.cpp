@@ -17,15 +17,17 @@ void UI_Element::updatePosition(const SDL_Rect& rect) {
 SDL_Rect UI_Element::getPosition() { return rect; }
 
 void UI_Element::render() {
+    if (hidden) return;
     if(texture) {
-        std::cout << "Call to yet to be implemented render texture in UI_Element render!\n";
+        // std::cout << "Call to yet to be implemented render texture in UI_Element render!\n";
         // TO BE IMPLEMENTED!
-        // int texW = 0;
-        // int texH = 0;
-        // SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
-        // SDL_RenderCopy(texture, )
-    }
-    else if(color.a != 0 && !hidden) {
+        int texW = 0;
+        int texH = 0;
+        SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
+        SDL_Rect src_rect   {0, 0, texW, texH};
+
+        SDL_RenderCopy(renderer, texture, &src_rect, &dest_rect);
+    } else if(color.a != 0) {
         // if(r < 1) {
         //     SDL_SetRenderDrawColor(context->renderer, color.r, color.g, color.b, color.a);
         //     SDL_RenderFillRect(context->renderer, &(this->rect));
@@ -41,4 +43,9 @@ void UI_Element::render() {
         drawRoundedRect(context->renderer, this->rect, this->color, this->border_color, 5, true);
 
     }
+}
+
+void UI_Element::updateSize() {
+    rect.w = this->context->getWidth();
+    rect.h = this->context->getHeight();
 }

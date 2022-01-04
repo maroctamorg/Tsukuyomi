@@ -54,7 +54,7 @@ private:
     // std::vector<std::weak_ptr<UI_Element>> ui_elements;
 
 public:
-    Layout(std::shared_ptr<GraphicsContext> context, std::initializer_list<Container> list)
+    Layout(std::shared_ptr<Graphics_Context> context, std::initializer_list<Container> list)
         : UI_Element(context), containers(list) {
             if(this->rect.w == 0 || this->rect.h == 0)
                 this->rect = SDL_Rect({0, 0, this->context->getWidth(), this->context->getHeight()});

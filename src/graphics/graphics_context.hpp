@@ -3,7 +3,7 @@
 
 #include "extern.hpp"
 
-class GraphicsContext final {
+class Graphics_Context final {
 private:
     int W_W { 800 };
     int W_H { 500 };
@@ -18,15 +18,15 @@ public:
     void Quit_SDL();
 
 public:
-    GraphicsContext() {
+    Graphics_Context() {
         Init_SDL();
     }
-    GraphicsContext(int width, int height)
+    Graphics_Context(int width, int height)
         : W_W {width}, W_H {height} {
         Init_SDL();
     }
 
-    ~GraphicsContext() {
+    ~Graphics_Context() {
         Quit_SDL();
     }
 
