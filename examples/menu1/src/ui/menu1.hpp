@@ -19,7 +19,7 @@ public:
     static std::shared_ptr<Button> input_button;
 
     // TEXT
-    static std::shared_ptr<TextBox> text;
+    static std::shared_ptr<Text_Box> text;
     
     static std::shared_ptr<Menu> menu;
 

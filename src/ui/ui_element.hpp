@@ -51,6 +51,12 @@ public:
     void setColor(const SDL_Colour &color);
     void setBorderColor(const SDL_Colour &color);
     
+    bool getHidden();
+    int getCurveRadius();
+    SDL_Rect getSpace();
+    SDL_Color getColor();
+    SDL_Color getBorderColor();
+    
     SDL_Rect getPosition();
 };
 

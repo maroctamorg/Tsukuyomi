@@ -7,7 +7,9 @@ class Event_Handler {
 public:
     std::weak_ptr<Input_Handler> main_input_handler;
     std::weak_ptr<Input_Handler> overlay_input_handler;
+
 private:
+    std::shared_ptr<Graphics_Context> g_context;
     SDL_Event event;
     std::vector<std::function<void(SDL_Keycode)>> key_callbacks;
 
@@ -19,6 +21,10 @@ public:
     //the enum passed to the callback is 'event.key.keysym.sym', type <SDL_Keycode>
 
     bool pollEvent();
+
+public:
+    // constructor!!! - take in a graphics context?
+    Event_Handler(std::weak_ptr<Input_Handler> main, std::weak_ptr<Input_Handler> overlay, std::shared_ptr<Graphics_Context> context);
 };
 
 #endif

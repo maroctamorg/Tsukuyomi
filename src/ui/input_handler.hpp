@@ -6,9 +6,12 @@
 #include "button.hpp"
 
 enum class EVENT_TYPES {
-    NO_EVENT = -1,
+    QUIT = -1,
+    NO_EVENT = 0,
     BUTTON_PRESS = 1,
-    CHAR_INPUT = 2,
+    KEY_DOWN = 2,
+    CHAR_INPUT = 3,
+    RESIZE = 4,
 };
 
 typedef struct {
@@ -107,6 +110,8 @@ public:
     void mouseClick(const SDL_Point cursor_pos);
     void keyDown(const SDL_Keycode key);
     void textInput(const SDL_Keymod modifier, const char input);
+    void resize();
+    void quit();
 
     Event pollEvent();
 

@@ -1,10 +1,10 @@
 #include "text_box.hpp"
 
-std::string TextBox::getText(){
+std::string Text_Box::getText(){
     return this->contents;
 }
 
-void TextBox::getCharTextureSize(int* w, int* h){
+void Text_Box::getCharTextureSize(int* w, int* h){
     if(this->lines.size() == 0) {
         Text dummyText {context->renderer,"abcdefghijklmnopqrstuvwxyz", font, ptsize, color};
         dummyText.getCharacterTextureSize(w, h);
@@ -18,11 +18,11 @@ void TextBox::getCharTextureSize(int* w, int* h){
     // }
 }
 
-int TextBox::numberOfLines() {
+int Text_Box::numberOfLines() {
     return this->lines.size();
 }
 
-SDL_Point TextBox::getPos(int line, int charPos) {
+SDL_Point Text_Box::getPos(int line, int charPos) {
     SDL_Point initialPos;
     int x,w,h;
     if (line == 0 && this->lines.size() == 0) {
@@ -40,18 +40,18 @@ SDL_Point TextBox::getPos(int line, int charPos) {
     return {x, initialPos.y};
 }
 
-void TextBox::updateAlignment(ALIGN_X alignX, ALIGN_Y alignY) {
+void Text_Box::updateAlignment(ALIGN_X alignX, ALIGN_Y alignY) {
     this->align_x = alignX;
     this->align_y = alignY;
 }
 
-void TextBox::updateFontSize(int ptsize) {
+void Text_Box::updateFontSize(int ptsize) {
     this->ptsize = ptsize;
     for(int i {0}; i < this->lines.size(); i++)
         this->lines.at(i)->updateFontSize(this->context->renderer, this->ptsize);
 }
 
-int TextBox::calculateCapacity() {
+int Text_Box::calculateCapacity() {
     int w, h;
     this->getCharTextureSize(&w, &h);
     int capacity = static_cast<int>(this->rect.h/h - 0.5)*static_cast<int>(this->rect.w/w - 0.5);
@@ -59,7 +59,7 @@ int TextBox::calculateCapacity() {
     return capacity;
 }
 
-bool TextBox::checkOverflow() {
+bool Text_Box::checkOverflow() {
     int w, h;
     // check vertical overflow
     Text text { context->renderer, contents, font, ptsize, font_color };
@@ -76,7 +76,7 @@ bool TextBox::checkOverflow() {
 }
 
 // returns number of characters stored in strings for lines of text (both start and end indices included)
-int TextBox::getContentLengthFromLines(int start_index, int end_index) {
+int Text_Box::getContentLengthFromLines(int start_index, int end_index) {
     int total {0};
     if(end_index < 0 || end_index >= this->lines.size())
         end_index = this->lines.size() - 1;
@@ -86,7 +86,7 @@ int TextBox::getContentLengthFromLines(int start_index, int end_index) {
 }
 
 // RECURSIVE-ISH DEFINITION
-bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
+bool Text_Box::breakContentsToLines(int start_index, int content_pointer) {
     // std::cout << "############\tCall to breakContentsToLines\t############\n";
     if(this->rect.w == 0 || this->rect.h == 0 || start_index > this->lines.size() || (start_index != 0 && start_index == this->lines.size()))
         return false;
@@ -109,7 +109,7 @@ bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
     }    
     // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
     if(!this->lines.at(start_index)->isLoaded()) {
-        std::cout << "!!!!!\tText texture is not loaded: call to TextBox::breakContentsToLine()\t!!!!!\n";
+        std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::breakContentsToLine()\t!!!!!\n";
         return false;
     }
     int length = contents.length();
@@ -166,7 +166,7 @@ bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
 }
 
 // PURELY ITERATIVE DEFINITION
-// bool TextBox::breakContentsToLines() {
+// bool Text_Box::breakContentsToLines() {
 //     // std::cout << "############\tCall to breakContentsToLines\t############\n";
 //     if(this->rect.w == 0 || this->rect.h == 0)
 //         return false;
@@ -176,7 +176,7 @@ bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
 //     }
 //     // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
 //     if(!this->lines.at(0)->isLoaded()) {
-//         std::cout << "!!!!!\tText texture is not loaded: call to TextBox::adaptContentsToBox()\t!!!!!\n";
+//         std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::adaptContentsToBox()\t!!!!!\n";
 //         return false;
 //     }
 //     int length = contents.length();
@@ -185,7 +185,7 @@ bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
 //     while(true) {
 //         // check for width overflow line-by-line
 //         if(!this->lines.at(i)->isLoaded()) {
-//             std::cout << "!!!!!\tText texture being checked in TextBox::adaptContentsToBox() is not loaded!\t!!!!!";
+//             std::cout << "!!!!!\tText texture being checked in Text_Box::adaptContentsToBox() is not loaded!\t!!!!!";
 //             return false;
 //         }
 //         this->lines.at(i)->getCharacterTextureSize(&w, &h);
@@ -232,7 +232,7 @@ bool TextBox::breakContentsToLines(int start_index, int content_pointer) {
 // }
 
 
-void TextBox::adaptContentsToBox() {
+void Text_Box::adaptContentsToBox() {
     // !!! MUST RETHINK IMPLEMENTATION, FOR NOW IT IS NO LONGER BEING USED!
 
     // if(!this->breakContentsToLines())
@@ -247,7 +247,7 @@ void TextBox::adaptContentsToBox() {
     // // }
     // // // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
     // // if(!this->lines.at(0)->isLoaded()) {
-    // //     std::cout << "!!!!!\tText texture is not loaded: call to TextBox::adaptContentsToBox()\t!!!!!\n";
+    // //     std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::adaptContentsToBox()\t!!!!!\n";
     // //     return;
     // // }
     // int w, h;
@@ -274,13 +274,13 @@ void TextBox::adaptContentsToBox() {
     // if(repeat)
     //     this->adaptContentsToBox();
 }
-void TextBox::append(char a) {
-    // std::cout << "Call to TextBox::append with char " << a << "!\n";
+void Text_Box::append(char a) {
+    // std::cout << "Call to Text_Box::append with char " << a << "!\n";
     this->contents.push_back(a);
     this->breakContentsToLines();
     // this->breakContentsToLines(this->lines.size() - 1, contents.length() - 1); // IS IT -1 OR JUST .LENGTH()?
 }
-bool TextBox::del() {
+bool Text_Box::del() {
     if(this->contents.size() < 1)
         return false;
     else if(this->contents.size() == 1)
@@ -296,11 +296,11 @@ bool TextBox::del() {
     // else
     //     this->breakContentsToLines(this->lines.size() - 1, this->contents.size() - 1 - length2);
 }
-void TextBox::updateText(std::string text) {
+void Text_Box::updateText(std::string text) {
     this->contents = text;
     this->breakContentsToLines();
 }
-void TextBox::render() {
+void Text_Box::render() {
     // std::cout << "###############\tCall to render text_box!\t###############\n";
     this->UI_Element::render();
     SDL_Rect target = this->rect;
@@ -317,17 +317,17 @@ void TextBox::render() {
     }
     return;
 }
-// void TextBox::update() {
+// void Text_Box::update() {
     
 // }
-void TextBox::updateSize() {
-    // std::cout << "Call to TextBox::updateSize()!\n";
+void Text_Box::updateSize() {
+    // std::cout << "Call to Text_Box::updateSize()!\n";
     if(this->checkOverflow())
         this->breakContentsToLines();
         // this->adaptContentsToBox();
 }
-void TextBox::updatePosition (const SDL_Rect& rect) {
-    // std::cout << "Call to TextBox::updatePosition()!\n";
+void Text_Box::updatePosition (const SDL_Rect& rect) {
+    // std::cout << "Call to Text_Box::updatePosition()!\n";
     this->UI_Element::updatePosition(rect);
     this->breakContentsToLines();
     // this->adaptContentsToBox();

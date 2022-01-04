@@ -17,17 +17,13 @@ void Input_Handler::registerInputFieldToHandler(Input_Field* input_field) {
 }
 
 void Input_Handler::mouseClick(const SDL_Point cursor_pos) {
-    // remove previous button press
-    b_pressed = nullptr;
-
-    event.type = EVENT_TYPES::NO_EVENT;
-    event.button_id = -1;
-    event.char_input = NULL;
 
     for (int i{0}; i < buttons.size(); i++) {
         if (buttons.at(i)->isActive() && buttons.at(i)->Clicked(cursor_pos)) {
             // std::cout << "Pressing button!\n";
             b_pressed = buttons.at(i)->press();
+            event.type = EVENT_TYPES::BUTTON_PRESS;
+            event.button_id = b_pressed->getId();
         }
     }
     for (int i{0}; i < input_fields.size(); i++) {
@@ -73,23 +69,34 @@ void Input_Handler::textInput(const SDL_Keymod modifier, const char input) {
     //Not copy or pasting
     if( !( modifier & KMOD_CTRL && ( input == 'c' || input == 'C' || input == 'v' || input == 'V' ) ) ){
         selected_field->charIn(input);
+        event.type = EVENT_TYPES::CHAR_INPUT;
+        event.char_input = input;
     }
     selected_field = nullptr;
 }
 
+void resize() {
+    event.type = EVENT_TYPES::RESIZE;
+    event.button_id = -1;
+    event.char_input = NULL;
+}
+
+void quit() {
+    event.type = EVENT_TYPES::QUIT;
+    event.button_id = -1;
+    event.char_input = NULL;
+}
+
 Event Input_Handler::pollEvent() {
-    if(!b_pressed) {
-        event.button_id = -1;
-        event.type = EVENT_TYPES::NO_EVENT;
-    }
-    else {
-        event.button_id = b_pressed->getId();
-        event.type = EVENT_TYPES::BUTTON_PRESS;
-    }
-    // int index = getCallbackIndexById(id);
-    // if(index > 0)
-    //     callbacks.at(i).execute();
-    return this->event;
+    Event buffer = this->event;
+    
+    // clear event
+    b_pressed = nullptr;
+    event.type = EVENT_TYPES::NO_EVENT;
+    event.button_id = -1;
+    event.char_input = NULL;
+
+    return buffer;
 }
 
 // std::vector<Button*> Input_Handler::getSelectedButtons() {

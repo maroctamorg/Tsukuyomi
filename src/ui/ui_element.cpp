@@ -7,6 +7,12 @@ void UI_Element::setSpace(const SDL_Rect& rect) { this->rect = rect; }
 void UI_Element::setColor(const SDL_Colour &color) { this->color = color; }
 void UI_Element::setBorderColor(const SDL_Colour &color) { this->border_color = color; }
 
+bool UI_Element::getHidden()        { return this->hidden;          }
+int UI_Element::getCurveRadius()   { return this->r;               }
+SDL_Rect UI_Element::getSpace()         { return this->rect;            }
+SDL_Color UI_Element::getColor()         { return this->color;           }
+SDL_Color UI_Element::getBorderColor()   { return this->border_color;    }
+
 void UI_Element::updatePosition(const SDL_Rect& rect) {
     this->rect.x = rect.x;
     this->rect.y = rect.y;
@@ -26,7 +32,7 @@ void UI_Element::render() {
         SDL_QueryTexture(texture, NULL, NULL, &texW, &texH);
         SDL_Rect src_rect   {0, 0, texW, texH};
 
-        SDL_RenderCopy(renderer, texture, &src_rect, &dest_rect);
+        SDL_RenderCopy(context->renderer, texture, &src_rect, &rect);
     } else if(color.a != 0) {
         // if(r < 1) {
         //     SDL_SetRenderDrawColor(context->renderer, color.r, color.g, color.b, color.a);

@@ -16,6 +16,20 @@ bool Event_Handler::pollEvent() {
     SDL_Point cursor_pos {-100, -100};
     if(!SDL_PollEvent(&(event))) return false;
     switch(event.type) {
+        case (SDL_QUIT) :
+            if(auto input_handler = main_input_handler.lock())  input_handler->quit();
+            if(auto input_handler = overlay_input_handler.lock())  input_handler->quit();
+            break;
+        case (SDL_WINDOWEVENT): {
+            if(event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                // must take in a graphics context + must implement follow through of updateSize()
+                g_context->updateWindowSize(event.window.data1, event.window.data2);
+                if(auto input_handler = main_input_handler.lock())   input_handler->resize();
+                if(auto input_handler = overlay_input_handler.lock())   input_handler->resize();
+                // std::cout << "Resized window:\t" << event.window.data1 << ", " << event.window.data2 << "\t" << g_context.getWidth() << ", " << g_context.getHeight() << "\n";
+            }
+            break;
+        }
         case (SDL_MOUSEBUTTONDOWN) :
             // std::cout << "SDL_MOUSEBUTTONDOWN event registered.\n";
             SDL_GetMouseState(&(cursor_pos.x), &(cursor_pos.y));
@@ -41,3 +55,6 @@ bool Event_Handler::pollEvent() {
     }
     return true;
 }
+
+Event_Handler::Event_Handler(std::weak_ptr<Input_Handler> main, std::weak_ptr<Input_Handler> overlay, std::shared_ptr<Graphics_Context> context)
+    : main_input_handler{main}, overlay_input_handler{overlay}, g_context {context} {}

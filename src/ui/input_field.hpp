@@ -15,7 +15,7 @@ class Input_Field : public UI_Element {
 private:
     const unsigned int id;
     int cursorPos { 0 };
-    TextBox textbox;
+    Text_Box Text_Box;
 
     // std::function<void(Graphics_Context*, Input_Handler*, Button*)> callback;
     std::shared_ptr<Input_Handler> handler;
@@ -58,8 +58,8 @@ public:
 //     std::vector<std::shared_ptr<Button>> buttons;
 
 // public:
-//     InputForm(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, Layout* layout, Button* button, TextBox* text, SDL_Color color = SDL_Color({0, 0, 0, 0}), SDL_Rect rect = SDL_Rect({0, 0, 0, 0}));
-//     InputForm(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, Layout* layout, Button* button, TextBox* text, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}), SDL_Texture* a_texture = nullptr);
+//     InputForm(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, Layout* layout, Button* button, Text_Box* text, SDL_Color color = SDL_Color({0, 0, 0, 0}), SDL_Rect rect = SDL_Rect({0, 0, 0, 0}));
+//     InputForm(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, Layout* layout, Button* button, Text_Box* text, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}), SDL_Texture* a_texture = nullptr);
 //     ~InputForm();
 
 // public:
