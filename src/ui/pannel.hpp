@@ -11,8 +11,8 @@ private:
 
 public:
     // Pannel() = default;
-    Pannel(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Rect rect, SDL_Texture* a_texture = nullptr)
-        :   UI_Element(context, rect, a_texture), layout(layout) {
+    Pannel(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Rect rect, std::string texture_path = "")
+        :   UI_Element(context, rect, texture_path), layout(layout) {
             if(layout)
                 this->layout->updatePosition(this->rect);
         }
@@ -29,10 +29,9 @@ public:
 
     // Move constructor
 	Pannel(Pannel&& pannel) noexcept
-		: UI_Element(pannel.context, pannel.rect, pannel.texture)
+		: UI_Element(pannel.context, pannel.rect, pannel.texture_path)
 	{
         layout = pannel.layout;
-        texture = pannel.texture;
         pannel.texture = nullptr;
         if(this->layout)
             this->layout->updatePosition(this->rect);

@@ -17,6 +17,11 @@ void Input_Handler::registerInputFieldToHandler(Input_Field* input_field) {
 }
 
 void Input_Handler::mouseClick(const SDL_Point cursor_pos) {
+    Input_Field* selected_field = this->getSelectedInputField();
+    if(selected_field) {
+        selected_field = selected_field->deSelect();
+        selected_field = nullptr;
+    }
 
     for (int i{0}; i < buttons.size(); i++) {
         if (buttons.at(i)->isActive() && buttons.at(i)->Clicked(cursor_pos)) {
@@ -68,6 +73,7 @@ void Input_Handler::textInput(const SDL_Keymod modifier, const char input) {
     if(!selected_field) return;
     //Not copy or pasting
     if( !( modifier & KMOD_CTRL && ( input == 'c' || input == 'C' || input == 'v' || input == 'V' ) ) ){
+        std::cout << "CharIn: " << input << '\n';
         selected_field->charIn(input);
         event.type = EVENT_TYPES::CHAR_INPUT;
         event.char_input = input;
@@ -75,13 +81,13 @@ void Input_Handler::textInput(const SDL_Keymod modifier, const char input) {
     selected_field = nullptr;
 }
 
-void resize() {
+void Input_Handler::resize() {
     event.type = EVENT_TYPES::RESIZE;
     event.button_id = -1;
     event.char_input = NULL;
 }
 
-void quit() {
+void Input_Handler::quit() {
     event.type = EVENT_TYPES::QUIT;
     event.button_id = -1;
     event.char_input = NULL;

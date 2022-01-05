@@ -132,6 +132,7 @@ void Text::display(SDL_Renderer* renderer, const SDL_Rect& target, ALIGN_X align
 
 int Text::generateTxtTexture(SDL_Renderer *renderer)
 {
+    std::cout << "Generating text texture for '" << text << "' in font <'" << font << "'>\n";
     if(txt_texture)
     {
         SDL_DestroyTexture(txt_texture);
@@ -147,6 +148,7 @@ int Text::generateTxtTexture(SDL_Renderer *renderer)
         txt_texture = SDL_CreateTextureFromSurface(renderer, surface);
 
         SDL_FreeSurface(surface);
+        surface = nullptr;
     }
 
     if(txt_texture) {
@@ -158,8 +160,8 @@ int Text::generateTxtTexture(SDL_Renderer *renderer)
 
 void Text::destroyTxtTexture()
 {
-    if(txt_texture != NULL && txt_texture != nullptr)
-    {
+    // if(txt_texture != NULL && txt_texture != nullptr)
+    if(txt_texture) {
         SDL_DestroyTexture(txt_texture);
         txt_texture = NULL;
     }

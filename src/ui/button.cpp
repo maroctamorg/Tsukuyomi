@@ -9,8 +9,8 @@ Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_
         if(this->handler)
             this->handler->registerButtonToHandler(this);
     }
-Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, std::shared_ptr<Layout> layout, const unsigned int id, bool active, bool select, SDL_Rect rect, SDL_Texture* a_texture)
-    :   UI_Element(context, rect, a_texture), handler(handler), layout(layout), id { id }, state { active, select, false, false } {
+Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, std::shared_ptr<Layout> layout, const unsigned int id, std::string texture_path, bool active, bool select, SDL_Rect rect)
+    :   UI_Element(context, rect, texture_path), handler(handler), layout(layout), id { id }, state { active, select, false, false } {
         if(this->layout)
             this->layout->updatePosition(this->rect);
         if(this->handler)
@@ -18,7 +18,8 @@ Button::Button(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_
     }
 
 int Button::getId() { return id; }
-void Button::registerCallBack(std::function<void(const Graphics_Context&, const Input_Handler&, Button&)> callback) {
+// void Button::registerCallBack(std::function<void(const std::shared_ptr<Graphics_Context> context, const std::shared_ptr<Input_Handler> handler, Button& button)> callback) {
+void Button::registerCallBack(std::function<void()> callback) {
     this->callback = callback;
 }
 void Button::activate()     {   state.active    =   true;   }
@@ -29,7 +30,8 @@ Button* Button::press() {
         state.selected = true; // handler->addButtonToSelected(this);
     state.pressed = true;
     // handler->addButtonToPressed(this);
-    callback(*context, *handler, *this);
+    // callback(context, handler, *this);
+    callback();
     //implement button press animation
     return this;
 }

@@ -62,19 +62,24 @@ void Layout::render() {
     // std::cout << "##############\tCall to render Layout!\t##############";
     this->UI_Element::render();
     for(int i = 0; i < ui_elements.size(); i++)
-        ui_elements.at(i)->render();
+        if(ui_elements.at(i).get() && !ui_elements.at(i)->getHidden()) ui_elements.at(i)->render();
 }
 void Layout::update() {
     for(int i = 0; i < ui_elements.size(); i++)
-        ui_elements.at(i)->update();
+        if(ui_elements.at(i).get()) ui_elements.at(i)->update();
 }
 void Layout::updateSize() {
+    std::cout << "Call to update layout size...\n";
     if(ui_elements.size() < containers.size()) {
         std::cout << "Fewer elements than containers in call to Layout::updateSize!\n";
+        // return;
+    }
+    if(containers.size() < ui_elements.size()) {
+        std::cout << "Few containers than elements in call to Layout::updateSize()\n";
         return;
     }
-    for (int i = 0; i < containers.size(); i++)
-        containers.at(i).place(ui_elements.at(i).get(), this->rect);
+    for (int i = 0; i < ui_elements.size(); i++)
+        if(ui_elements.at(i).get()) containers.at(i).place(ui_elements.at(i).get(), this->rect);
 }
 void Layout::updatePosition(const SDL_Rect& rect) {
     this->UI_Element::updatePosition(rect);

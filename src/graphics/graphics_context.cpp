@@ -18,7 +18,7 @@ void Graphics_Context::Init_SDL()
         }
 
         //Create window
-        this->window = SDL_CreateWindow("PONG++", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->W_W, this->W_H, 0 | SDL_WINDOW_RESIZABLE);
+        this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->W_W, this->W_H, 0 | SDL_WINDOW_RESIZABLE);
         if( window == NULL )
         {
             printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -27,7 +27,7 @@ void Graphics_Context::Init_SDL()
         else
         {
             //Create renderer for window
-            this->renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+            this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
             if( renderer == NULL )
             {
                 printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );

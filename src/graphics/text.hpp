@@ -17,7 +17,7 @@ enum class ALIGN_X {
 };
 
 class Text {
-private:
+public:
     std::string text;
     std::string font;
     int ptsize { 20 };

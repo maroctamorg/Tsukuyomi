@@ -62,8 +62,12 @@ public:
 
     // Move constructor
 	Layout(Layout&& layout) noexcept
-		: UI_Element(layout.context, layout.rect, layout.texture)
+		: UI_Element(layout.context, layout.rect)
 	{
+        this->texture_path = layout.texture_path;
+        if(!this->texture_path.empty()) {
+            this->texture = loadTexture(this->context->renderer, this->texture_path);
+        }
         if(this->rect.w == 0 || this->rect.h == 0)
             this->rect = SDL_Rect({0, 0, this->context->getWidth(), this->context->getHeight()});
 

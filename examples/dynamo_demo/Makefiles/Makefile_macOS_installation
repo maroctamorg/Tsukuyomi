@@ -1,0 +1,27 @@
+CC = g++
+CFLAGS = -std=c++17
+INCLUDE = -I ${HOME}/Library/Tsukuyomi/include
+LINKER_FLAGS = -F /Library/Frameworks/ -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer ${HOME}/Library/Tsukuyomi/Tsukuyomi.a
+SOURCES = main.cpp
+SOURCE_OBJECT_FILES = $(shell basename -a ${SOURCES:.cpp=.o})
+TARGET = dynamo_demo
+
+build: compile link
+
+compile:
+	@echo "\nCompiling App..."
+	${CC} -c $(patsubst %, src/%, $(SOURCES)) ${INCLUDE} ${CFLAGS}
+	mv ${SOURCE_OBJECT_FILES} build/
+
+link:
+	@echo "\nLinking App..."
+	${CC} -o ${TARGET} $(patsubst %, build/%, ${SOURCE_OBJECT_FILES}) $(patsubst %, build/lib/graph/%, ${LIB_GRAPH_OBJECT_FILES}) $(patsubst %, build/lib/ui/%, ${LIB_UI_OBJECT_FILES}) ${LINKER_FLAGS}
+	mv ${TARGET} build/
+
+run:
+	@echo "\nRunning App..."
+	build/${TARGET}
+
+cleanup:
+	@echo "\nCleaning up App..."
+	rm $(patsubst %, build/%, ${SOURCE_OBJECT_FILES})

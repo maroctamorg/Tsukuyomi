@@ -20,7 +20,8 @@ void UI_Element::updatePosition(const SDL_Rect& rect) {
     this->rect.h = rect.h;
 }
 
-SDL_Rect UI_Element::getPosition() { return rect; }
+SDL_Point UI_Element::getPosition() { return SDL_Point{rect.x, rect.y}; }
+void UI_Element::setPosition(int x, int y) { rect.x = x; rect.y = y; }
 
 void UI_Element::render() {
     if (hidden) return;

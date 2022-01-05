@@ -6,12 +6,14 @@
 #include "button.hpp"
 
 enum class EVENT_TYPES {
+    UNHANDLED_SDL_EVENT = -2,
     QUIT = -1,
     NO_EVENT = 0,
-    BUTTON_PRESS = 1,
-    KEY_DOWN = 2,
-    CHAR_INPUT = 3,
-    RESIZE = 4,
+    CLICK = 1,
+    BUTTON_PRESS = 2,
+    KEY_DOWN = 3,
+    CHAR_INPUT = 4,
+    RESIZE = 5,
 };
 
 typedef struct {

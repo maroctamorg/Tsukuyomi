@@ -5,26 +5,34 @@
 
 class Event_Handler {
 public:
-    std::weak_ptr<Input_Handler> main_input_handler;
-    std::weak_ptr<Input_Handler> overlay_input_handler;
+    std::shared_ptr<Input_Handler> main_input_handler;
+    std::shared_ptr<Input_Handler> overlay_input_handler;
+    SDL_Event event;
 
 private:
     std::shared_ptr<Graphics_Context> g_context;
-    SDL_Event event;
     std::vector<std::function<void(SDL_Keycode)>> key_callbacks;
 
 public:
-    void registerMainInputHandler(std::weak_ptr<Input_Handler> input_handler);
-    void registerOverlayInputHandler(std::weak_ptr<Input_Handler> input_handler);
+    // friend int SDL_PollEvent(SDL_Event *event);
+
+    // void registerMainInputHandler(std::shared_ptr<Input_Handler> input_handler);
+    // void registerOverlayInputHandler(std::shared_ptr<Input_Handler> input_handler);
 
     void registerKeyCallback(std::function<void(SDL_Keycode)> callback);
     //the enum passed to the callback is 'event.key.keysym.sym', type <SDL_Keycode>
 
-    bool pollEvent();
+    Event pollEvent();
+
+    // std::weak_ptr<Input_Handler> getMainInputHandler();
+    // std::weak_ptr<Input_Handler> getOverlayInputHandler();
 
 public:
-    // constructor!!! - take in a graphics context?
-    Event_Handler(std::weak_ptr<Input_Handler> main, std::weak_ptr<Input_Handler> overlay, std::shared_ptr<Graphics_Context> context);
+    Event_Handler(std::shared_ptr<Input_Handler> main, std::shared_ptr<Input_Handler> overlay, std::shared_ptr<Graphics_Context> context);
+    Event_Handler(std::shared_ptr<Graphics_Context> context);
+    ~Event_Handler() {
+        std::cout << "Call to Event Handler destructor...\n";
+    }
 };
 
 #endif

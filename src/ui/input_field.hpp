@@ -15,7 +15,7 @@ class Input_Field : public UI_Element {
 private:
     const unsigned int id;
     int cursorPos { 0 };
-    Text_Box Text_Box;
+    Text_Box text_box;
 
     // std::function<void(Graphics_Context*, Input_Handler*, Button*)> callback;
     std::shared_ptr<Input_Handler> handler;
@@ -23,7 +23,7 @@ private:
 
 public:
     Input_Field(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, const unsigned int id, const std::string font, int ptsize, const SDL_Colour font_color, SDL_Color color = SDL_Color({255, 255, 255, 255}), ALIGN_X alignX = ALIGN_X::LEFT, ALIGN_Y alignY = ALIGN_Y::CENTER, bool active = true, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}));
-    Input_Field(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, const unsigned int id, const std::string font, int ptsize, const SDL_Colour font_color, SDL_Texture* a_texture, ALIGN_X alignX = ALIGN_X::LEFT, ALIGN_Y alignY = ALIGN_Y::CENTER, bool active = true, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}));
+    Input_Field(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Input_Handler> handler, const unsigned int id, const std::string font, int ptsize, const SDL_Colour font_color, std::string texture_path, ALIGN_X alignX = ALIGN_X::LEFT, ALIGN_Y alignY = ALIGN_Y::CENTER, bool active = true, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}));
     ~Input_Field();
 
 public:

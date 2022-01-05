@@ -7,6 +7,7 @@ class Graphics_Context final {
 private:
     int W_W { 800 };
     int W_H { 500 };
+    std::string title;
 
 public:
     SDL_Window *window { nullptr };
@@ -18,11 +19,12 @@ public:
     void Quit_SDL();
 
 public:
-    Graphics_Context() {
+    Graphics_Context(std::string Title)
+        : title{Title} {
         Init_SDL();
     }
-    Graphics_Context(int width, int height)
-        : W_W {width}, W_H {height} {
+    Graphics_Context(int width, int height, std::string Title)
+        : title{Title}, W_W {width}, W_H {height} {
         Init_SDL();
     }
 
