@@ -49,15 +49,15 @@ public:
 class Dynamics final : public UI_Element {
 private:
     int counter {0};
-    Vertex<10> node_arr[100];
+    Vertex<10> node_arr[30];
 public:
     uint iterations {0};
     void render() override {
         UI_Element::render();
         SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
-        for (int i{0}; i < 100; i++) {
-            SDL_RenderDrawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 3);
-            SDL_RenderFillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 3);
+        for (int i{0}; i < 30; i++) {
+            SDL_RenderDrawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+            SDL_RenderFillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
             for (int j{0}; j < node_arr[i].connections; j++) {
                 SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
             }
@@ -67,7 +67,7 @@ public:
         iterations++;
         counter++;
         if(counter < 6) return;
-        for (int i{0}; i < 100; i++) {
+        for (int i{0}; i < 30; i++) {
             node_arr[i].pos.x += node_arr[i].vel.x;
             node_arr[i].pos.y += node_arr[i].vel.y;
             node_arr[i].vel.x += node_arr[i].accel.x;
@@ -79,7 +79,7 @@ public:
         counter = 0;
     }
     void multiplyVelocities(int multiplier) {
-        for (int i{0}; i < 100; i++) {
+        for (int i{0}; i < 30; i++) {
             node_arr[i].vel.x *= multiplier;
             node_arr[i].vel.y *= multiplier;
         }
@@ -88,7 +88,7 @@ public:
     Dynamics(const std::shared_ptr<Graphics_Context> context)
         :   UI_Element(context, SDL_Rect({0, 0, context->getWidth(), context->getHeight()}), "resources/background.jpg") {
             std::cout << "Constructing dynamics...\n";
-            for (int i{0}; i < 100; i++) {
+            for (int i{0}; i < 30; i++) {
                 for (int j{0}; j < rand() % 11; j++) {
                     node_arr[i].addConnection(node_arr + (rand() % 101));
                 }
@@ -101,26 +101,30 @@ class Button_Press final : public Animation {
 private:
     int counter {0};
     const SDL_Color color0;
-    const SDL_Color color1 {UI::palette[1]};
-    std::shared_ptr<Button> button;
+    const SDL_Color color1 {UI::palette[0]};
+    std::weak_ptr<Button> w_button;
 public:
     void next() override {
-        if(counter == 0)
-            button->setColor(color1);
-        if(counter > 6) {
-            button->setColor(color0);
-            end();
+        if(auto button = w_button.lock()) {
+            if(counter == 0) {
+                button->setColor(color1);
+            } else if(counter > 6) {
+                button->setColor(color0);
+                end();
+            }
+        } else {
+            std::cout << "Unable to lock button in Button_Press animation...\n";
         }
         counter++;
     }
 public:
-    Button_Press(std::shared_ptr<Button> button) : Animation(false, true), button{button}, color0(button->getColor()) {}
+    Button_Press(std::shared_ptr<Button>& button) : Animation(false, true), w_button{button}, color0(button->getColor()) {}
     ~Button_Press() = default;
 };
 
 class Overlay final : public UI_Element {
 private:
-    std::shared_ptr<Dynamics> dynamics;
+    std::weak_ptr<Dynamics> dynamics;
 public:
     std::shared_ptr<Layout> main_layout;
     std::shared_ptr<Layout> pannel_layout;
@@ -148,12 +152,15 @@ public:
     }
 
     void update() override {
-        counter_txt->updateText(std::to_string(dynamics->iterations));
+        if(const auto dyn = dynamics.lock())
+            counter_txt->updateText(std::to_string(dyn->iterations));
+        else
+            std::cout << "Unable to lock dynamics pointer in Overlay::update()\n";
         // main->update();
     }
     
     void updatePosition(const SDL_Rect& rect) override {
-        this->UI_Element::updatePosition(rect);
+        // this->UI_Element::updatePosition(rect);
         main->updateSize();
     }
 
@@ -162,8 +169,8 @@ public:
         :   UI_Element(context, SDL_Rect({0, 0, context->getWidth(), context->getHeight()}), SDL_Color{0, 0, 0, 0}, SDL_Color{0, 0, 0, 0}, true), dynamics(dynamics) {
         std::cout << "Constructing overlay...\n";
         // define UI layouts
-        main_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.05, 0.05, 0.1, 0.05), Container(0.25, 0.25, 0.5, 0.5), Container(0.90, 0.05, 0.05, 0.05)}));
-        pannel_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.2, 0.1, 0.6, 0.1), Container(0.2, 0.3, 0.25, 0.1), Container(0.55, 0.3, 0.25, 0.1), Container(0.2, 0.5, 0.25, 0.1), Container(0.55, 0.5, 0.25, 0.1), Container(0.2, 0.6, 0.6, 0.3)}));
+        main_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.05, 0.05, 0.1, 0.05), Container(0.15, 0.15, 0.7, 0.7), Container(0.90, 0.05, 0.05, 0.05)}));
+        pannel_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.2, 0.1, 0.6, 0.1), Container(0.2, 0.3, 0.25, 0.1), Container(0.55, 0.3, 0.25, 0.1), Container(0.2, 0.5, 0.25, 0.1), Container(0.55, 0.5, 0.25, 0.1), Container(0.2, 0.7, 0.6, 0.2)}));
 
         //define and place text_box elements
         title_txt = std::make_shared<Text_Box>(context, "SIMULATION", UI::font, 15, UI::palette[2], ALIGN_X::CENTER, ALIGN_Y::CENTER, UI::palette[0]);
@@ -173,8 +180,8 @@ public:
         pannel_layout->placeUI_Element(std::make_shared<Text_Box>(context, "CONTROLS", UI::font, 15, UI::palette[2], ALIGN_X::CENTER, ALIGN_Y::CENTER, SDL_Color{255, 255, 255, 255}), 0);
 
         //define and place pannel input fields
-        title_field = std::make_shared<Input_Field>(context, i_handler, 0, UI::font, 15, SDL_Color{0, 0, 0, 255});
-        velocity_field = std::make_shared<Input_Field>(context, i_handler, 1, UI::font, 15, SDL_Color{0, 0, 0, 255});
+        title_field = std::make_shared<Input_Field>(context, i_handler, 0, UI::font, 12, SDL_Color{0, 0, 0, 255});
+        velocity_field = std::make_shared<Input_Field>(context, i_handler, 1, UI::font, 12, SDL_Color{0, 0, 0, 255});
         pannel_layout->placeUI_Element(title_field, 2);
         pannel_layout->placeUI_Element(velocity_field, 4);
 
@@ -185,30 +192,31 @@ public:
         
         velocity_button_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.1, 0.05, 0.8, 0.9)}));
         velocity_button_layout->placeUI_Element(std::make_shared<Text_Box>(context, "VELOCITY MULTIPLIER", UI::font, 15, UI::palette[2], ALIGN_X::CENTER, ALIGN_Y::CENTER), 0);
-        velocity_button = std::make_shared<Button>(context, i_handler, title_button_layout, 1, true, false, UI::palette[1]);
+        velocity_button = std::make_shared<Button>(context, i_handler, velocity_button_layout, 1, true, false, UI::palette[1]);
 
         freeze_button_layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0.1, 0.05, 0.8, 0.9)}));
         freeze_button_layout->placeUI_Element(std::make_shared<Text_Box>(context, "FREEZE SIMULATION", UI::font, 15, UI::palette[2], ALIGN_X::CENTER, ALIGN_Y::CENTER), 0);
-        freeze_button = std::make_shared<Button>(context, i_handler, title_button_layout, 2, true, false, UI::palette[1]);
+        freeze_button = std::make_shared<Button>(context, i_handler, freeze_button_layout, 2, true, false, UI::palette[1]);
 
-        Overlay& overlay(*(this));
-        title_button->registerCallBack([i_handler, a_handler, overlay]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay.title_button));
-            overlay.title_txt->updateText(overlay.title_field->getText());
+        title_button->registerCallBack([i_handler, a_handler, overlay{this}]() mutable {
+            a_handler->add(std::make_unique<Button_Press>(overlay->title_button));
+            overlay->title_txt->updateText(overlay->title_field->getText());
         });
-        velocity_button->registerCallBack([i_handler, a_handler, overlay]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay.velocity_button));
+        velocity_button->registerCallBack([i_handler, a_handler, overlay{this}]() mutable {
+            a_handler->add(std::make_unique<Button_Press>(overlay->velocity_button));
             int multiplier {1};
             try {
-                multiplier = std::stoi(overlay.velocity_field->getText());
-                overlay.dynamics->multiplyVelocities(multiplier);
-            } catch (const std::exception& e) {
+                multiplier = std::stoi(overlay->velocity_field->getText());
+                if(auto ptr_dynamics = overlay->dynamics.lock()) ptr_dynamics->multiplyVelocities(multiplier);
+                else std::cout << "Unable to lock pointer to dynamics in velocity button callback...";
+            } catch (...) {
                 std::cout << "Invalid argument...\n";
             }
         });
-        freeze_button->registerCallBack([a_handler, overlay]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay.freeze_button));
-            overlay.dynamics->multiplyVelocities(0);
+        freeze_button->registerCallBack([a_handler, overlay{this}]() mutable {
+            a_handler->add(std::make_unique<Button_Press>(overlay->freeze_button));
+            if(auto ptr_dynamics = overlay->dynamics.lock()) ptr_dynamics->multiplyVelocities(0);
+            else std::cout << "Unable to lock pointer to dynamics in freeze button callback...";
         });
         
         pannel_layout->placeUI_Element(title_button, 1);
@@ -228,17 +236,19 @@ public:
 // hiding not properly implemented
 class Overlay_Animation final : public Animation {
 private:
+    bool hide {false};
     int counter {0};
-    const int increment;
-    const SDL_Point final_pos;
+    int increment;
+    SDL_Point final_pos;
     std::shared_ptr<Overlay> overlay;
 public:
     void next() override {
-        if(counter == 0){
-            overlay->setPosition(final_pos.x, 0);
-        }
-        else if(counter > 6) {
+        if(counter == 0) { //???
+            if(!hide) overlay->setPosition(final_pos.x, -overlay->getSpace().h);
+            overlay->setHidden(false);
+        } else if(hide ? (overlay->getPosition().y <= final_pos.y) : (overlay->getPosition().y >= final_pos.y)) {
             overlay->setPosition(final_pos.x, final_pos.y);
+            if(hide) overlay->setHidden(true);
             end();
         } else {
             int current { overlay->getPosition().y };
@@ -247,7 +257,11 @@ public:
         counter++;
     }
 public:
-    Overlay_Animation(std::shared_ptr<Overlay> overlay) : Animation(true, true), overlay{overlay}, final_pos(overlay->getPosition()), increment(overlay->getPosition().y / 6) {}
+    Overlay_Animation(std::shared_ptr<Overlay> overlay) : Animation(true, true), overlay{overlay} {
+        hide = !overlay->getHidden();
+        increment = (hide ? 5 : -5);
+        final_pos = hide ? SDL_Point{overlay->getPosition().x, -overlay->getSpace().h} : overlay->getPosition();
+    }
     ~Overlay_Animation() = default;
 };
 

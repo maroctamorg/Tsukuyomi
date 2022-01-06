@@ -48,12 +48,21 @@ int main() {
 
     //setup event-handling and callbacks
     std::cout << "Setting up event-handling and callbacks...\n";
-    e_handler->registerKeyCallback([overlay, a_handler](SDL_Keycode keycode){
-        if(keycode == SDLK_SPACE) overlay->setHidden(!overlay->getHidden());
-        a_handler->add(std::make_unique<Overlay_Animation>(overlay));
+    uint a_id = a_handler->add(std::make_unique<Overlay_Animation>(overlay));
+    std::weak_ptr<Overlay> ptr_overlay {overlay};
+    e_handler->registerKeyCallback([ptr_overlay, a_handler, a_id](SDL_Keycode keycode){
+        if(auto overlay = ptr_overlay.lock()) {
+            if(keycode == SDLK_TAB) a_handler->start(a_id);
+        } else {
+            std::cout << "Failed to lock pointer to overlay in event handler callback.\n";
+        }
     });
 
-    handler->main();
+    try {
+        handler->main();
+    } catch(...) {
+        std::cerr << "main() encountered an exception... proper exception handling yet to be implemented... exiting...\n";
+    }
 
     return 0;
 }

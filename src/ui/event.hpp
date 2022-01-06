@@ -30,9 +30,7 @@ public:
 public:
     Event_Handler(std::shared_ptr<Input_Handler> main, std::shared_ptr<Input_Handler> overlay, std::shared_ptr<Graphics_Context> context);
     Event_Handler(std::shared_ptr<Graphics_Context> context);
-    ~Event_Handler() {
-        std::cout << "Call to Event Handler destructor...\n";
-    }
+    ~Event_Handler() = default;
 };
 
 #endif

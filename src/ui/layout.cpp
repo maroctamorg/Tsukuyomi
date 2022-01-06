@@ -69,13 +69,13 @@ void Layout::update() {
         if(ui_elements.at(i).get()) ui_elements.at(i)->update();
 }
 void Layout::updateSize() {
-    std::cout << "Call to update layout size...\n";
+    // std::cout << "Call to update layout size...\n";
     if(ui_elements.size() < containers.size()) {
         std::cout << "Fewer elements than containers in call to Layout::updateSize!\n";
         // return;
     }
     if(containers.size() < ui_elements.size()) {
-        std::cout << "Few containers than elements in call to Layout::updateSize()\n";
+        std::cout << "Fewer containers than elements in call to Layout::updateSize()\n";
         return;
     }
     for (int i = 0; i < ui_elements.size(); i++)

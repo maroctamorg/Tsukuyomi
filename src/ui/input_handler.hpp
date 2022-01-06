@@ -32,19 +32,29 @@ private:
 
     Event event;
 
+private:
+    inline void releaseButtons() {
+        for (int i{0}; i < buttons.size(); i++) {
+            // button->dettachHandler();
+            buttons.at(i) = nullptr;
+        }
+    }
+    inline void releaseFields() {
+        for (int i{0}; i < input_fields.size(); i++) {
+            // input_field->dettachHandler();
+            input_fields.at(i) = nullptr;
+        }
+    }
+    // void deepCopy(const Input_Handler& handler);
+
 public:
     Input_Handler() = default;
-    // provide move assignment and copy?
+    // standard copy and assignments are sufficient since input_handler does not own the buttons
+    // and fields which are registered with it (it does not delete them, ever)
 
     ~Input_Handler() {
-        for (auto& button : buttons) {
-            // button->dettachHandler();
-            button = nullptr;
-        }
-        for (auto& input_field : input_fields) {
-            // input_field->dettachHandler();
-            input_field = nullptr;
-        }
+        releaseButtons();
+        releaseFields();
         b_pressed = nullptr;
     }
 

@@ -1,6 +1,17 @@
 #include "input_handler.hpp"
 #include "button.hpp"
 
+//not needed since Input_Handler does not own the buttons and input_fields
+// void Input_Handler::deepCopy(const Input_Handler& handler) {
+//     this->listening = handler.listening;
+//     this->releaseButtons();
+//     this->releaseFields();
+//     this->b_pressed = nullptr;
+
+//     this->input_fields = handler.input_fields;
+//     this->buttons = handler.buttons;
+// }
+
 void Input_Handler::resume()    {   this->listening = true;     }
 void Input_Handler::pause()     {   this->listening = false;    }
 bool Input_Handler::polling()   {   return this->listening;     };
@@ -43,11 +54,11 @@ void Input_Handler::keyDown(const SDL_Keycode key) {
     Input_Field* selected_field = this->getSelectedInputField();
     switch(key) {
         case SDLK_SPACE:
-            std::cout << "Detected key press:\t'space'\n";
+            // std::cout << "Detected key press:\t'space'\n";
 
             break;
         case SDLK_RETURN:
-            std::cout << "Detected key press:\t'enter'\n";
+            // std::cout << "Detected key press:\t'enter'\n";
             
             break;
         //Handle backspace
@@ -73,7 +84,7 @@ void Input_Handler::textInput(const SDL_Keymod modifier, const char input) {
     if(!selected_field) return;
     //Not copy or pasting
     if( !( modifier & KMOD_CTRL && ( input == 'c' || input == 'C' || input == 'v' || input == 'V' ) ) ){
-        std::cout << "CharIn: " << input << '\n';
+        // std::cout << "CharIn: " << input << '\n';
         selected_field->charIn(input);
         event.type = EVENT_TYPES::CHAR_INPUT;
         event.char_input = input;

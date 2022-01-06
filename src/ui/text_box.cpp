@@ -108,7 +108,7 @@ bool Text_Box::breakContentsToLines(int start_index, int content_pointer) {
         this->lines.push_back(std::make_unique<Text>(context->renderer, this->contents.substr(content_pointer, this->contents.length() - content_pointer), font, ptsize, font_color));
     }    
     // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
-    if(!this->lines.at(start_index)->isLoaded()) {
+    if(!this->lines.at(start_index)->isTextureLoaded()) {
         std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::breakContentsToLine()\t!!!!!\n";
         return false;
     }
@@ -175,7 +175,7 @@ bool Text_Box::breakContentsToLines(int start_index, int content_pointer) {
 //         this->lines.push_back(std::make_unique<Text>(context->renderer, contents, font, ptsize, font_color));
 //     }
 //     // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
-//     if(!this->lines.at(0)->isLoaded()) {
+//     if(!this->lines.at(0)->isTextureLoaded()) {
 //         std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::adaptContentsToBox()\t!!!!!\n";
 //         return false;
 //     }
@@ -184,7 +184,7 @@ bool Text_Box::breakContentsToLines(int start_index, int content_pointer) {
 //     int w, h;
 //     while(true) {
 //         // check for width overflow line-by-line
-//         if(!this->lines.at(i)->isLoaded()) {
+//         if(!this->lines.at(i)->isTextureLoaded()) {
 //             std::cout << "!!!!!\tText texture being checked in Text_Box::adaptContentsToBox() is not loaded!\t!!!!!";
 //             return false;
 //         }
@@ -246,7 +246,7 @@ void Text_Box::adaptContentsToBox() {
     // //     this->lines.push_back(std::make_unique<Text>(context->renderer, contents, font, ptsize, font_color));
     // // }
     // // // CHECK IF TEXTURE HAS BEEN SUCCESSFULLY LOADED!
-    // // if(!this->lines.at(0)->isLoaded()) {
+    // // if(!this->lines.at(0)->isTextureLoaded()) {
     // //     std::cout << "!!!!!\tText texture is not loaded: call to Text_Box::adaptContentsToBox()\t!!!!!\n";
     // //     return;
     // // }
@@ -306,7 +306,7 @@ void Text_Box::render() {
     SDL_Rect target = this->rect;
     int w, h;
     for(int i {0}; i < this->lines.size(); i++) {
-        if(!this->lines.at(i)->isLoaded()) {
+        if(!this->lines.at(i)->isTextureLoaded()) {
             std::cout << "!!!!!\tText texture being rendered is not loaded!\t!!!!!\n";
             return;
         }

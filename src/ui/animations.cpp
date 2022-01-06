@@ -64,7 +64,6 @@ void Animation_Handler::update() {
             else it->second->reset();
         }
         it++;
+        if(del > 0) animations.erase(del); // can I erase from inside the iterator loop?
     }
-
-    if(del > 0) animations.erase(del);
 }

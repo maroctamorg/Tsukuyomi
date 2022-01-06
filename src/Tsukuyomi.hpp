@@ -61,7 +61,7 @@ public:
 };
 
 template <class Main, class Overlay>
-UI_Handler<Main, Overlay>::UI_Handler(int W_H, int W_W, std::string Title, int refresh_rate)
+UI_Handler<Main, Overlay>::UI_Handler(int W_W, int W_H, std::string Title, int refresh_rate)
         :   refresh_rate{refresh_rate} {
             context = std::make_shared<Graphics_Context>(W_W, W_H, Title);
             event_handler = std::make_shared<Event_Handler>(context);
@@ -70,11 +70,11 @@ UI_Handler<Main, Overlay>::UI_Handler(int W_H, int W_W, std::string Title, int r
             layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0, 0, 1, 1), Container(0, 0, 1, 1)}));
 
             customMainInputHandler = [](Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
-                std::cout << "No custom main input handler implemented...\n";
+                // std::cout << "No custom main input handler implemented...\n";
             };
 
             customOverlayInputHandler = [](Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
-                std::cout << "No custom overlay input handler implemented...\n";
+                // std::cout << "No custom overlay input handler implemented...\n";
             };
         }
 
@@ -145,47 +145,53 @@ bool UI_Handler<Main, Overlay>::main() {
     done = false;
     // std::weak_ptr<Main> main_wk(main_target);
     // std::weak_ptr<Overlay> overlay_wk(overlay_target);
-    UI_Handler* handler = this;
-    std::thread render_thread = std::thread([handler]() mutable {
-        if(!handler->main_target.get()) return;
-        Timer rLoop;
-        Event event;
-        while(!handler->done) {
-            // if(auto main = main_wk.lock()) main.render();
-            // if(auto overlay = overlay_wk.lock()) overlay.render();
-            // if(auto main = main_wk.lock()) main.present();
-            // if(auto overlay = overlay_wk.lock()) overlay.present();
-            handler->animation_handler->update();
-            // handler->main_target->render();
-            // if(handler->overlay.get()) handler->overlay->render();
-            handler->layout->render();
-            handler->context->display();
-            // handler->main_target->update();
-            // if(handler->overlay.get()) handler->overlay->update();
-            handler->layout->update();
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - rLoop.elapsed()))));
-        // reset timer
-        rLoop.reset();
-    });
-    handler = nullptr;
+    // std::thread render_thread = std::thread([handler{this}]() mutable {
+    //     if(!handler->main_target.get()) return;
+    //     Timer rLoop;
+    //     while(!handler->done) {
+    //         // handler->main_target->update();
+    //         // if(handler->overlay.get()) handler->overlay->update();
+    //         handler->layout->update();
+    //         // if(auto main = main_wk.lock()) main.render();
+    //         // if(auto overlay = overlay_wk.lock()) overlay.render();
+    //         // if(auto main = main_wk.lock()) main.present();
+    //         // if(auto overlay = overlay_wk.lock()) overlay.present();
+    //         handler->animation_handler->update();
+    //         // handler->main_target->render();
+    //         // if(handler->overlay.get()) handler->overlay->render();
+    //         handler->layout->render();
+    //         handler->context->display();
+    //         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - rLoop.elapsed()))));
+    //         // reset timer
+    //         rLoop.reset();
+    //     }
+    // });
     Event event;
+    Timer rLoop;
     while(!done) {
+        layout->update();
+        animation_handler->update();
+        layout->render();
+        context->display();
+        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/refresh_rate - rLoop.elapsed()))));
+        rLoop.reset();
+
         event = event_handler->pollEvent();
-        if(event.type == EVENT_TYPES::NO_EVENT || animation_handler->pending()) continue;
-        
-        if(event.type == EVENT_TYPES::QUIT) {
-            done = true;
-            break;
-        } else if(event.type == EVENT_TYPES::RESIZE) {
-            SDL_Rect w_rect{0, 0, this->context->getWidth(), this->context->getHeight()};
-            layout->updatePosition(w_rect);
-            continue;
+        switch(event.type) {
+            case(EVENT_TYPES::NO_EVENT) : continue;
+            case (EVENT_TYPES::QUIT) :
+                done = true;
+                break; // is this breaking from the case or from the main loop?
+            case (EVENT_TYPES::RESIZE) :
+                SDL_Rect w_rect{0, 0, this->context->getWidth(), this->context->getHeight()};
+                layout->updatePosition(w_rect);
+                continue;
         }
+        if(animation_handler->pending()) continue;
         
         if(event_handler->main_input_handler->polling()) {
             event = event_handler->main_input_handler->pollEvent();
-            if(customMainInputHandler) customMainInputHandler(event, this->context, this->animation_handler, this->main_target, this->overlay);
+            customMainInputHandler(event, this->context, this->animation_handler, this->main_target, this->overlay);
         }
 
         if(event_handler->overlay_input_handler->polling()) {

@@ -26,14 +26,14 @@ protected:
 
 public:
     UI_Element(const std::shared_ptr<Graphics_Context> graphics_context, SDL_Rect rect, std::string a_texture, bool hidden = false, int r = 0)
-        : context(graphics_context), rect(rect), texture_path(a_texture) {
+        : context(graphics_context), rect(rect), texture_path(a_texture), hidden(hidden), r(r) {
             texture = loadTexture(context->renderer, texture_path);
             if(!texture) std::cout << "Texture could not be loaded...\n";
         }
     // UI_Element(const std::shared_ptr<Graphics_Context> graphics_context, int x = 0, int y = 0, int w = 0, int h = 0, SDL_Colour color = SDL_Colour({0, 0, 0, 0}), SDL_Colour border_color = SDL_Colour({0, 0, 0, 0}), bool hidden = false, int r = 0)
     //     : context(graphics_context), rect{x, y, w, h}, color {color.r, color.g, color.b, color.a} {}
     UI_Element(const std::shared_ptr<Graphics_Context> graphics_context, SDL_Rect rect = SDL_Rect({0, 0, 0, 0}), SDL_Colour color = SDL_Colour({0, 0, 0, 0}), SDL_Colour border_color = SDL_Colour({0, 0, 0, 0}), bool hidden = false, int r = 0)
-        : context(graphics_context), rect{rect.x, rect.y, rect.w, rect.h}, color {color.r, color.g, color.b, color.a} {}
+        : context(graphics_context), rect(rect), color(color), border_color(border_color), hidden(hidden), r(r) {}
     virtual ~UI_Element()  {
         if(texture)
             SDL_DestroyTexture(texture);
