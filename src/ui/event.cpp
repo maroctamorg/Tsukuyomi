@@ -26,7 +26,7 @@ Event Event_Handler::pollEvent() {
             }
             else return Event({EVENT_TYPES::UNHANDLED_SDL_EVENT, -1, NULL});
         }
-        case (SDL_MOUSEBUTTONDOWN) : {
+        case (SDL_MOUSEBUTTONUP) : {
             // std::cout << "SDL_MOUSEBUTTONDOWN event registered.\n";
             SDL_GetMouseState(&(cursor_pos.x), &(cursor_pos.y));
             if(main_input_handler->polling()) main_input_handler->mouseClick(cursor_pos);
