@@ -48,7 +48,7 @@ void Text_Box::updateAlignment(ALIGN_X alignX, ALIGN_Y alignY) {
 void Text_Box::updateFontSize(int ptsize) {
     this->ptsize = ptsize;
     for(int i {0}; i < this->lines.size(); i++)
-        this->lines.at(i)->updateFontSize(this->context->renderer, this->ptsize);
+        this->lines.at(i)->updateFontSize(this->ptsize);
 }
 
 int Text_Box::calculateCapacity() {

@@ -48,11 +48,12 @@ int main() {
 
     //setup event-handling and callbacks
     std::cout << "Setting up event-handling and callbacks...\n";
-    uint a_id = a_handler->add(std::make_unique<Overlay_Animation>(overlay));
+    uint show_a_id = a_handler->add(std::make_unique<Overlay_Show_Animation>(overlay, handler->getLayout(), 1));
+    uint hide_a_id = a_handler->add(std::make_unique<Overlay_Hide_Animation>(overlay, handler->getLayout(), 1));
     std::weak_ptr<Overlay> ptr_overlay {overlay};
-    e_handler->registerKeyCallback([ptr_overlay, a_handler, a_id](SDL_Keycode keycode){
+    e_handler->registerKeyCallback([ptr_overlay, a_handler, show_a_id, hide_a_id](SDL_Keycode keycode){
         if(auto overlay = ptr_overlay.lock()) {
-            if(keycode == SDLK_TAB) a_handler->start(a_id);
+            if(keycode == SDLK_TAB) overlay->getHidden() ? a_handler->start(show_a_id) : a_handler->start(hide_a_id);
         } else {
             std::cout << "Failed to lock pointer to overlay in event handler callback.\n";
         }

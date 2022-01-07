@@ -16,7 +16,7 @@ public:
 public:
     bool isActive() const;
     bool isDone() const;
-    void start();
+    virtual void start();
     virtual void next();
     void end();
     void reset();

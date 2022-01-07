@@ -58,6 +58,23 @@ void Layout::placeUI_Element(UI_Element* a_element, int index) {
     containers.at(index).place(ui_elements.at(index).get(), this->rect);
 }
 
+std::shared_ptr<UI_Element> Layout::getUIElement(int index) {
+    if(index < 0 || index >= ui_elements.size()) return nullptr;
+    return ui_elements.at(index);
+    
+}
+Container Layout::getContainer(int index) {
+    if(index < 0 || index >= containers.size()) return Container(0, 0, 0, 0);
+    return containers.at(index);
+}
+void Layout::addContainer(int index, Container container) {
+    if(index < 0) std::cout << "Invalid index passed to addContainer call in Layout object...\n"; return;
+    if(index >= containers.size())  containers.push_back(container);
+    
+    containers.at(index) = container;
+    if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect);
+}
+
 void Layout::render() {
     // std::cout << "##############\tCall to render Layout!\t##############";
     this->UI_Element::render();

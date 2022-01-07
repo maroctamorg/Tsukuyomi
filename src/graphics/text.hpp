@@ -18,6 +18,8 @@ enum class ALIGN_X {
 
 class Text {
 private:
+    bool update_text {false};
+    bool update_font {false};
     std::string text;
     std::string font;
     int ptsize { 20 };
@@ -50,6 +52,7 @@ private:
     void deepCopy(const Text& text);
     
     bool loadFont();
+    int generateTexture(SDL_Renderer *renderer);
     int generateTxtTexture(SDL_Renderer *renderer);
 
     void destroyFont();
@@ -123,8 +126,11 @@ public:
     void getCharacterTextureSize(int* w, int* h);
     
     std::array<std::string,2> split(int index);
-    void updateTxt(SDL_Renderer *renderer, const std::string text);
-    void updateFontSize(SDL_Renderer *renderer, const int ptsize);
+    void update(SDL_Renderer *renderer);
+    // void updateTxt(SDL_Renderer *renderer, const std::string text);
+    // void updateFontSize(SDL_Renderer *renderer, const int ptsize);
+    void updateTxt(const std::string text);
+    void updateFontSize(const int ptsize);
     void display(SDL_Renderer* renderer, const SDL_Rect& target, ALIGN_X alignX, ALIGN_Y alignY);
 };
 

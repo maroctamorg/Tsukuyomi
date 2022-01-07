@@ -11,7 +11,7 @@ namespace UI {
     SDL_Color palette[3] {SDL_Color{68, 72, 87, 255}, SDL_Color{122, 163, 152, 255}, SDL_Color{207, 198, 169, 255}};
     const std::string font {"resources/fonts/CourierNew.ttf"};
     int W_W {1280};
-    int W_H {800};
+    int W_H {760};
 };
 
 template <int n>
@@ -54,14 +54,14 @@ public:
     uint iterations {0};
     void render() override {
         UI_Element::render();
-        SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
-        for (int i{0}; i < 30; i++) {
-            SDL_RenderDrawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
-            SDL_RenderFillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
-            for (int j{0}; j < node_arr[i].connections; j++) {
-                SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
-            }
-        }
+        // SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
+        // for (int i{0}; i < 30; i++) {
+        //     SDL_RenderDrawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+        //     SDL_RenderFillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+        //     for (int j{0}; j < node_arr[i].connections; j++) {
+        //         SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
+        //     }
+        // }
     }
     void update() override {
         iterations++;
@@ -101,19 +101,22 @@ class Button_Press final : public Animation {
 private:
     int counter {0};
     const SDL_Color color0;
-    const SDL_Color color1 {UI::palette[0]};
+    static constexpr SDL_Color color1 {122, 163, 255, 255};
     std::weak_ptr<Button> w_button;
 public:
+    void start() override {
+        this->Animation::start();
+        if(auto button = w_button.lock()) button->setColor(color1);
+        else std::cout << "Unable to lock button in Button_Press animation...\n";
+    }
     void next() override {
-        if(auto button = w_button.lock()) {
-            if(counter == 0) {
-                button->setColor(color1);
-            } else if(counter > 6) {
+        if(counter == 10) {
+            if(auto button = w_button.lock()) {
                 button->setColor(color0);
-                end();
+                end();  
+            } else {
+                std::cout << "Unable to lock button in Button_Press animation...\n";
             }
-        } else {
-            std::cout << "Unable to lock button in Button_Press animation...\n";
         }
         counter++;
     }
@@ -198,12 +201,14 @@ public:
         freeze_button_layout->placeUI_Element(std::make_shared<Text_Box>(context, "FREEZE SIMULATION", UI::font, 15, UI::palette[2], ALIGN_X::CENTER, ALIGN_Y::CENTER), 0);
         freeze_button = std::make_shared<Button>(context, i_handler, freeze_button_layout, 2, true, false, UI::palette[1]);
 
-        title_button->registerCallBack([i_handler, a_handler, overlay{this}]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay->title_button));
+        uint index = a_handler->add(std::make_unique<Button_Press>(title_button));
+        title_button->registerCallBack([index, a_handler, overlay{this}]() mutable {
+            a_handler->start(index);
             overlay->title_txt->updateText(overlay->title_field->getText());
         });
-        velocity_button->registerCallBack([i_handler, a_handler, overlay{this}]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay->velocity_button));
+        index = a_handler->add(std::make_unique<Button_Press>(velocity_button));
+        velocity_button->registerCallBack([index, a_handler, overlay{this}]() mutable {
+            a_handler->start(index);
             int multiplier {1};
             try {
                 multiplier = std::stoi(overlay->velocity_field->getText());
@@ -213,8 +218,9 @@ public:
                 std::cout << "Invalid argument...\n";
             }
         });
-        freeze_button->registerCallBack([a_handler, overlay{this}]() mutable {
-            a_handler->add(std::make_unique<Button_Press>(overlay->freeze_button));
+        index = a_handler->add(std::make_unique<Button_Press>(freeze_button));
+        freeze_button->registerCallBack([index, a_handler, overlay{this}]() mutable {
+            a_handler->start(index);
             if(auto ptr_dynamics = overlay->dynamics.lock()) ptr_dynamics->multiplyVelocities(0);
             else std::cout << "Unable to lock pointer to dynamics in freeze button callback...";
         });
@@ -233,36 +239,73 @@ public:
     }
 };
 
-// hiding not properly implemented
-class Overlay_Animation final : public Animation {
+class Overlay_Show_Animation final : public Animation {
 private:
-    bool hide {false};
+    const int index;
     int counter {0};
-    int increment;
-    SDL_Point final_pos;
+    Container final_pos;
+    Container current;
+    std::shared_ptr<Layout> layout;
     std::shared_ptr<Overlay> overlay;
 public:
+    void start() override {
+        this->Animation::start();
+        final_pos = layout->getContainer(1);
+        current = final_pos;
+        current.r_w = final_pos.r_w / 100;
+        current.r_h = final_pos.r_h / 100;
+        layout->addContainer(index, current);
+        overlay->setHidden(false);
+        std::cout << "Started Show Overlay Animation...\n";
+    }
     void next() override {
-        if(counter == 0) { //???
-            if(!hide) overlay->setPosition(final_pos.x, -overlay->getSpace().h);
-            overlay->setHidden(false);
-        } else if(hide ? (overlay->getPosition().y <= final_pos.y) : (overlay->getPosition().y >= final_pos.y)) {
-            overlay->setPosition(final_pos.x, final_pos.y);
-            if(hide) overlay->setHidden(true);
+        if(counter == 100) {
+            layout->addContainer(index, final_pos);
             end();
-        } else {
-            int current { overlay->getPosition().y };
-            overlay->setPosition(final_pos.x, current + increment);
+            std::cout << "Ended Show Overlay Animation...\n";
+        } else if ((100 - counter) % 10 == 0) {
+            current.r_w = final_pos.r_w / ((100 - counter) / 10 + 1);
+            current.r_h = final_pos.r_h / ((100 - counter) / 10 + 1);
+            layout->addContainer(index, current);
         }
         counter++;
     }
 public:
-    Overlay_Animation(std::shared_ptr<Overlay> overlay) : Animation(true, true), overlay{overlay} {
-        hide = !overlay->getHidden();
-        increment = (hide ? 5 : -5);
-        final_pos = hide ? SDL_Point{overlay->getPosition().x, -overlay->getSpace().h} : overlay->getPosition();
+    Overlay_Show_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}
+    ~Overlay_Show_Animation() = default;
+};
+
+class Overlay_Hide_Animation final : public Animation {
+private:
+    const int index;
+    int counter {0};
+    Container final_pos;
+    Container current;
+    std::shared_ptr<Layout> layout;
+    std::shared_ptr<Overlay> overlay;
+public:
+    void start() override {
+        this->Animation::start();
+        final_pos = layout->getContainer(1);
+        current = final_pos;
+        std::cout << "Started Hide Overlay Animation...\n";
     }
-    ~Overlay_Animation() = default;
+    void next() override {
+        if(counter == 100) {
+            overlay->setHidden(true);
+            layout->addContainer(index, final_pos);
+            end();
+            std::cout << "Ended Hide Overlay Animation...\n";
+        } else if (counter % 10 == 0) {
+            current.r_w = final_pos.r_w / (counter / 10 + 1);
+            current.r_h = final_pos.r_h / (counter / 10 + 1);
+            layout->addContainer(index, current);
+        }
+        counter++;
+    }
+public:
+    Overlay_Hide_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}
+    ~Overlay_Hide_Animation() = default;
 };
 
 #endif

@@ -17,7 +17,7 @@ enum class Y_POS {
 };
 
 class Container final {
-private:
+public:
     float r_x { 0 };
     float r_y { 0 };
     float r_w { 0 };
@@ -116,6 +116,11 @@ public:
     // void placeUI_Element(std::unique_ptr<UI_Element> element, int index);
     void placeUI_Element(std::shared_ptr<UI_Element> element, int index);
     void placeUI_Element(UI_Element* a_element, int index);
+
+    std::shared_ptr<UI_Element> getUIElement(int index);
+    Container getContainer(int index);
+    // add or update container
+    void addContainer(int index, Container container);
 
     void render() override;
     void update() override;

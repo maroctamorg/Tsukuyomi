@@ -36,7 +36,9 @@ public:
     int getWidth();
     int getHeight();
 
+    void clear();
     void display();
+
     void updateWindowSize(int w, int h);
 };
 

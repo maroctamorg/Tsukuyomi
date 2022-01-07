@@ -19,6 +19,11 @@
 
 #include "utilities/timer.hpp"
 
+
+enum class UPDATE_REQ {
+    RESIZE = 0,
+};
+
 template <class Main, class Overlay>
 class UI_Handler {
 static_assert(std::is_base_of<UI_Element, Main>::value, "Main must derive from UI_Element");
@@ -33,8 +38,11 @@ protected:
     std::shared_ptr<Main> main_target;
     std::shared_ptr<Overlay> overlay;
 
+    std::deque<UPDATE_REQ> update_requests;
+
     std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler;
     std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler;
+
 public:
     bool done {true};
     UI_Handler(int W_H, int W_W, std::string Title, int refresh_rate = 120);
@@ -47,6 +55,7 @@ public:
     // std::weak_ptr<Event_Handler> getEventHandler();
     // std::weak_ptr<Graphics_Context> getGraphicsContext();
     
+    std::shared_ptr<Layout> getLayout();
     std::shared_ptr<Animation_Handler> getAnimationHandler();
     std::shared_ptr<Event_Handler> getEventHandler();
     std::shared_ptr<Graphics_Context> getGraphicsContext();
@@ -54,6 +63,8 @@ public:
     void registerCustomMainInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler);
     void registerCustomOverlayInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler);
 public:
+    virtual void update();
+    virtual void updateRequest(UPDATE_REQ request);
     virtual bool main();
     // virtual bool main_async();
     // void pause();
@@ -115,6 +126,11 @@ void UI_Handler<Main, Overlay>::setOverlay(std::shared_ptr<Overlay> overlay) {
 // }
 
 template <class Main, class Overlay>
+std::shared_ptr<Layout> UI_Handler<Main, Overlay>::getLayout() {
+    return this->layout;
+}
+
+template <class Main, class Overlay>
 std::shared_ptr<Animation_Handler> UI_Handler<Main, Overlay>::getAnimationHandler() {
     return this->animation_handler;
 }
@@ -140,53 +156,85 @@ void UI_Handler<Main, Overlay>::registerCustomOverlayInputHandler(std::function<
 }
 
 template <class Main, class Overlay>
+void UI_Handler<Main, Overlay>::update() {
+    while(!update_requests.empty()) {
+        if(update_requests.front() == UPDATE_REQ::RESIZE) {
+            SDL_Rect rect {0, 0, context->getWidth(), context->getHeight()};
+            layout->updatePosition(rect);
+        }
+        update_requests.pop_front();
+    }
+
+    layout->update();
+    animation_handler->update();
+}
+template <class Main, class Overlay>
+void UI_Handler<Main, Overlay>::updateRequest(UPDATE_REQ request) {
+    update_requests.push_back(request);
+}
+
+template <class Main, class Overlay>
 bool UI_Handler<Main, Overlay>::main() {
     std::cout << "Starting main loop...\n";
     done = false;
-    // std::weak_ptr<Main> main_wk(main_target);
-    // std::weak_ptr<Overlay> overlay_wk(overlay_target);
-    // std::thread render_thread = std::thread([handler{this}]() mutable {
-    //     if(!handler->main_target.get()) return;
-    //     Timer rLoop;
+
+    // implement layout update queue: events in the event_handler register an update request
+    // (e.g. a resize update request) which gets fulfilled when layout->update() is called before normal execution
+    //  moreover, have update return a boolean flagging whether anything has been updated and thus a re-render is necessary
+    // if nothing has been updated, no need to re-render
+    // std::thread render_thread = std::thread([handler{this}]() {
+    //     // double run = 0;
+    //     double temp = 0;
     //     while(!handler->done) {
-    //         // handler->main_target->update();
-    //         // if(handler->overlay.get()) handler->overlay->update();
-    //         handler->layout->update();
-    //         // if(auto main = main_wk.lock()) main.render();
-    //         // if(auto overlay = overlay_wk.lock()) overlay.render();
-    //         // if(auto main = main_wk.lock()) main.present();
-    //         // if(auto overlay = overlay_wk.lock()) overlay.present();
-    //         handler->animation_handler->update();
-    //         // handler->main_target->render();
-    //         // if(handler->overlay.get()) handler->overlay->render();
+    //         temp = 0;
+    //         handler->update();
+
+    //         temp = rLoop.elapsed();
+    //         handler->context->clear();
     //         handler->layout->render();
+    //         temp = rLoop.elapsed() - temp;
+    //         std::cout << "RENDER: " << temp << "\n";
+
     //         handler->context->display();
-    //         std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - rLoop.elapsed()))));
-    //         // reset timer
+    //         temp = rLoop.elapsed() - temp;
+    //         std::cout << "DISPLAY: " << temp << "\n";
+            
+    //         // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - run))));
+    //         std::cout << " - ######################################################################### - \n\n";
     //         rLoop.reset();
     //     }
     // });
+    double temp = 0;
     Event event;
     Timer rLoop;
     while(!done) {
-        layout->update();
-        animation_handler->update();
-        layout->render();
-        context->display();
-        std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/refresh_rate - rLoop.elapsed()))));
+        update();
+
+        temp = 0;
         rLoop.reset();
+        context->clear();
+        layout->render();
+        temp = rLoop.elapsed();
+        std::cout << "RENDER: " << temp << "\n";
+
+        context->display();
+        temp = rLoop.elapsed() - temp;
+        std::cout << "DISPLAY: " << temp << "\n";
+        
+        // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - run))));
+        std::cout << " - ######################################################################### - \n\n";
 
         event = event_handler->pollEvent();
         switch(event.type) {
             case(EVENT_TYPES::NO_EVENT) : continue;
             case (EVENT_TYPES::QUIT) :
                 done = true;
-                break; // is this breaking from the case or from the main loop?
+                break; // breaking from the switch statement
             case (EVENT_TYPES::RESIZE) :
-                SDL_Rect w_rect{0, 0, this->context->getWidth(), this->context->getHeight()};
-                layout->updatePosition(w_rect);
+                updateRequest(UPDATE_REQ::RESIZE); // thread safe
                 continue;
         }
+
         if(animation_handler->pending()) continue;
         
         if(event_handler->main_input_handler->polling()) {
@@ -199,6 +247,7 @@ bool UI_Handler<Main, Overlay>::main() {
             customOverlayInputHandler(event, this->context, this->animation_handler, this->main_target, this->overlay);
         }
     }
+    // if(render_thread.joinable()) render_thread.join();
     return true;
 }
 // bool UI_Handler::main_async() {

@@ -39,7 +39,7 @@ void Animation_Handler::remove(uint animation) {
 }
 
 void Animation_Handler::start(uint animation) {
-    animations.at(animation)->start();
+    if(!animation.isActive()) animations.at(animation)->start();
 }
 
 bool Animation_Handler::pending() const {

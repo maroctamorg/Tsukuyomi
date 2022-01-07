@@ -3,7 +3,7 @@
 Text::Text(SDL_Renderer* renderer, const std::string text, const std::string font, int ptsize, const SDL_Colour color)
     : text(text), font(font), ptsize(ptsize), color(color) {
     if(this->loadFont())
-        this->generateTxtTexture(renderer);
+        this->generateTexture(renderer);
 }
 
 void Text::deepCopy(const Text& text) {
@@ -112,15 +112,25 @@ std::array<std::string,2> Text::split(int index) {
     return std::array<std::string, 2> { text.substr(0, index + 1), text.substr(index + 1, text.length() - (index + 1)) };
 }
 
-void Text::updateTxt(SDL_Renderer* renderer, const std::string text) {
-    this->text = text;
-    this->generateTxtTexture(renderer);
+void Text::update(SDL_Renderer *renderer) {
+    if(update_font) loadFont();
+    if(update_text)  generateTxtTexture(renderer);
 }
 
-void Text::updateFontSize(SDL_Renderer *renderer, const int ptsize) {
+// void Text::updateTxt(SDL_Renderer* renderer, const std::string text) {
+void Text::updateTxt(const std::string text) {
+    this->text = text;
+    update_text = true;
+    // this->generateTxtTexture(renderer);
+}
+
+// void Text::updateFontSize(SDL_Renderer *renderer, const int ptsize) {
+void Text::updateFontSize(const int ptsize) {
     this->ptsize = ptsize;
-    if(this->loadFont())
-        this->generateTxtTexture(renderer);
+    update_font = true;
+    update_text = true;
+    // if(this->loadFont())
+    //     this->generateTxtTexture(renderer);
 }
 
 void Text::display(SDL_Renderer* renderer, const SDL_Rect& target, ALIGN_X alignX, ALIGN_Y alignY) {
@@ -140,25 +150,32 @@ void Text::display(SDL_Renderer* renderer, const SDL_Rect& target, ALIGN_X align
     SDL_RenderCopy(renderer, txt_texture, NULL, &dstrect);
 }
 
-
 int Text::generateTxtTexture(SDL_Renderer *renderer)
 {
     // std::cout << "Generating text texture for '" << text << "' in font <'" << font << "'>\n";
     destroyTxtTexture();
+    try {
+        SDL_Surface *surface { TTF_RenderText_Blended(txt_font, text.c_str(), color) };
+        txt_texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        SDL_FreeSurface(surface);
+        surface = nullptr;
+    } catch (...) {
+        std::cout << "EXCEPTION:\tUnable to generate text texture on the fly.\n";
+        return 0;
+    }
+
+    return 1;
+}
+
+int Text::generateTexture(SDL_Renderer *renderer)
+{
+    // std::cout << "Generating text texture for '" << text << "' in font <'" << font << "'>\n";
     destroyFont();
 
     try {
         this->loadFont();
-        try {
-            SDL_Surface *surface { TTF_RenderText_Blended(txt_font, text.c_str(), color) };
-            txt_texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-            SDL_FreeSurface(surface);
-            surface = nullptr;
-        } catch (...) {
-            std::cout << "EXCEPTION:\tUnable to generate text texture on the fly.\n";
-            return 0;
-        }
+        this->generateTxtTexture(renderer);
     } catch (...) {
         std::cout << "EXCEPTION:\tUnable to load text font on the fly.\n";
         return 0;

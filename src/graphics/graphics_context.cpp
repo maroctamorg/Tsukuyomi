@@ -92,6 +92,10 @@ void Graphics_Context::Quit_SDL()
 int Graphics_Context::getWidth() { return W_W; }
 int Graphics_Context::getHeight() { return W_H; }
 
+void Graphics_Context::clear() {
+    SDL_RenderClear(this->renderer);
+}
+
 void Graphics_Context::display() {
     SDL_RenderPresent(this->renderer);
 }
