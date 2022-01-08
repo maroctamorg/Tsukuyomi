@@ -30,6 +30,8 @@ TO DO </h1>
   - purge unnecessary stack depth: unnecessary function calls, recusive -> iterative
   - purge unnecessary resource copying and moving around, prefer direct access, passing by reference copying raw pointers (with appropriate sanity checks), and moving resources: draw diagram of resource ownership, scope, expected lifetime, and observations
 
+-----------------------------------------------------
+
 <h2 style="text-align: center; font-weight: bold;"> BUGS </h2>
 
 **RENDER**
@@ -41,7 +43,7 @@ TO DO </h1>
   - animations are getting stuck if a button is held, rather than just clicked
   - hide and show animations also getting stuck
 
-**PROGRAMMING**
+----------------------------------------------------
 
 <h2 style="text-align: center; font-weight: bold;"> QUALITY IMPROVEMENTS </h2>
 
