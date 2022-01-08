@@ -13,7 +13,10 @@ Built on SDL2, the framework can support a wide array of target systems, though 
 Dependencies
 ------------
 
-- **SDL2**  (https://www.libsdl.org/)
+- **SDL2** <br> (https://www.libsdl.org/)
+- **SDL_image 2.0** <br> (https://www.libsdl.org/projects/SDL_image/)
+- **SDL_ttf 2.0** <br> (https://www.libsdl.org/projects/SDL_ttf/)
+- **SDL_mixer 2.0** <br> (https://www.libsdl.org/projects/SDL_mixer/)
 
 ----------------------
 Installation
@@ -21,7 +24,7 @@ Installation
 
 **Making use of the installation script**
 
-The installation script is not yet complete, 
+The installation script is not yet complete, so it does not handle installation of the depencies automatically. You may use it if you have a standard installation of the SDL2 framework on macOS
 
 **Building the Framework from source as a static library**
 
