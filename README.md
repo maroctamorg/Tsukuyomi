@@ -24,7 +24,7 @@ Installation
 
 **Making use of the macOS installation script**
 
-Simply copy the installation script to the project root and execute it (with sudo for a system installation):
+Simply copy the installation script to the project root and execute it (with sudo for a system installation)
 ```bash
 cp installation_scripts/install_macOS.sh install.sh
 (sudo) bash install.sh
