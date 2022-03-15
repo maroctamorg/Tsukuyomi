@@ -5,7 +5,7 @@ A C++ lightweight, customizable, cross-platform GUI framework
 
 Tsukuyomi is a light-weight, highly-customizable GUI framework which aims to make C++ GUI development simple and flexible.
 
-Using the built-in UI_Element-derived classes, a developer can implement a simple, yet fully-featured GUI in only a few lines of code. For more advanced developers, or specific use-cases, it is also quite straightforward to develop your own UI_Elements by standard inheritance.
+Using the built-in UI_Element-derived classes, a developer can implement a simple GUI in only a few lines of code. For more advanced developers, or specific use-cases, it is also quite straightforward to develop your own UI_Elements by standard inheritance.
 
 Built on SDL2, the framework can support a wide array of target systems, though at this moment of very early development it works out of the box only on macOS and Linux.
 
