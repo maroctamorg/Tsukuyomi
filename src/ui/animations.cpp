@@ -10,6 +10,7 @@ bool Animation::isActive() const {
 
 void Animation::start() {
     active = true;
+    done = false;
 }
 
 void Animation::next() {
@@ -39,7 +40,7 @@ void Animation_Handler::remove(uint animation) {
 }
 
 void Animation_Handler::start(uint animation) {
-    if(!animation.isActive()) animations.at(animation)->start();
+    if(!animations.at(animation)->isActive()) animations.at(animation)->start();
 }
 
 bool Animation_Handler::pending() const {

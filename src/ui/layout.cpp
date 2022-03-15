@@ -68,11 +68,18 @@ Container Layout::getContainer(int index) {
     return containers.at(index);
 }
 void Layout::addContainer(int index, Container container) {
-    if(index < 0) std::cout << "Invalid index passed to addContainer call in Layout object...\n"; return;
-    if(index >= containers.size())  containers.push_back(container);
-    
-    containers.at(index) = container;
-    if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect);
+    if(index < 0) {
+        std::cout << "Invalid index passed to addContainer call in Layout object...\n";
+        return;
+    }
+    else if(index >= containers.size()) {
+        containers.resize(index+1);
+        containers.at(index) = container;
+    }
+    else {
+        containers.at(index) = container;
+        if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect);
+    }
 }
 
 void Layout::render() {

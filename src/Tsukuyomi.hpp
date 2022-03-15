@@ -215,14 +215,14 @@ bool UI_Handler<Main, Overlay>::main() {
         context->clear();
         layout->render();
         temp = rLoop.elapsed();
-        std::cout << "RENDER: " << temp << "\n";
+        // std::cout << "RENDER: " << temp << "\n";
 
         context->display();
         temp = rLoop.elapsed() - temp;
-        std::cout << "DISPLAY: " << temp << "\n";
+        // std::cout << "DISPLAY: " << temp << "\n";
         
-        // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - run))));
-        std::cout << " - ######################################################################### - \n\n";
+        // // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(1000*(1.0/handler->refresh_rate - run))));
+        // std::cout << " - ######################################################################### - \n\n";
 
         event = event_handler->pollEvent();
         switch(event.type) {

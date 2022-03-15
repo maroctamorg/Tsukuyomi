@@ -10,8 +10,8 @@
 namespace UI {
     SDL_Color palette[3] {SDL_Color{68, 72, 87, 255}, SDL_Color{122, 163, 152, 255}, SDL_Color{207, 198, 169, 255}};
     const std::string font {"resources/fonts/CourierNew.ttf"};
-    int W_W {1280};
-    int W_H {760};
+    int W_W {800};
+    int W_H {600};
 };
 
 template <int n>
@@ -241,6 +241,7 @@ public:
 
 class Overlay_Show_Animation final : public Animation {
 private:
+    const uint steps {10000};
     const int index;
     int counter {0};
     Container final_pos;
@@ -250,22 +251,22 @@ private:
 public:
     void start() override {
         this->Animation::start();
-        final_pos = layout->getContainer(1);
+        final_pos = layout->getContainer(index);
         current = final_pos;
-        current.r_w = final_pos.r_w / 100;
-        current.r_h = final_pos.r_h / 100;
+        current.r_w = final_pos.r_w / steps;
+        current.r_h = final_pos.r_h / steps;
         layout->addContainer(index, current);
         overlay->setHidden(false);
         std::cout << "Started Show Overlay Animation...\n";
     }
     void next() override {
-        if(counter == 100) {
+        if(counter == steps) {
             layout->addContainer(index, final_pos);
             end();
             std::cout << "Ended Show Overlay Animation...\n";
-        } else if ((100 - counter) % 10 == 0) {
-            current.r_w = final_pos.r_w / ((100 - counter) / 10 + 1);
-            current.r_h = final_pos.r_h / ((100 - counter) / 10 + 1);
+        } else if ((steps - counter) % 10 == 0) {
+            current.r_w = final_pos.r_w / ((steps - counter) / 10 + 1);
+            current.r_h = final_pos.r_h / ((steps - counter) / 10 + 1);
             layout->addContainer(index, current);
         }
         counter++;
@@ -277,6 +278,7 @@ public:
 
 class Overlay_Hide_Animation final : public Animation {
 private:
+    const uint steps {10000};
     const int index;
     int counter {0};
     Container final_pos;
@@ -286,12 +288,12 @@ private:
 public:
     void start() override {
         this->Animation::start();
-        final_pos = layout->getContainer(1);
+        final_pos = layout->getContainer(index);
         current = final_pos;
         std::cout << "Started Hide Overlay Animation...\n";
     }
     void next() override {
-        if(counter == 100) {
+        if(counter == steps) {
             overlay->setHidden(true);
             layout->addContainer(index, final_pos);
             end();
