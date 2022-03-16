@@ -5,7 +5,6 @@
 #include <memory>
 #include <random>
 #include "Tsukuyomi.hpp"
-#include "../utilities/circle.hpp"
 
 namespace UI {
     SDL_Color palette[3] {SDL_Color{68, 72, 87, 255}, SDL_Color{122, 163, 152, 255}, SDL_Color{207, 198, 169, 255}};
@@ -56,8 +55,8 @@ public:
         UI_Element::render();
         // SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
         // for (int i{0}; i < 30; i++) {
-        //     SDL_RenderDrawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
-        //     SDL_RenderFillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+        //     drawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+        //     fillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
         //     for (int j{0}; j < node_arr[i].connections; j++) {
         //         SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
         //     }

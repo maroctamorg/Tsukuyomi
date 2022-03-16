@@ -1,9 +1,6 @@
-#ifndef CIRCLE_HPP
-#define CIRCLE_HPP
+#include "circles.hpp"
 
-#include <SDL2/SDL.h>
-
-int SDL_RenderDrawCircle(SDL_Renderer * renderer, int x, int y, int radius)
+int drawCircle(SDL_Renderer * renderer, int x, int y, int radius)
 {
     int offsetx, offsety, d;
     int status;
@@ -48,8 +45,7 @@ int SDL_RenderDrawCircle(SDL_Renderer * renderer, int x, int y, int radius)
     return status;
 }
 
-
-int SDL_RenderFillCircle(SDL_Renderer * renderer, int x, int y, int radius)
+int fillCircle(SDL_Renderer * renderer, int x, int y, int radius)
 {
     int offsetx, offsety, d;
     int status;
@@ -94,5 +90,3 @@ int SDL_RenderFillCircle(SDL_Renderer * renderer, int x, int y, int radius)
 
     return status;
 }
-
-#endif

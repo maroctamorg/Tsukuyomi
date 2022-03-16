@@ -1,5 +1,4 @@
 #include "rectangles.hpp"
-#include <iostream>
 
 void drawBaseRects (SDL_Renderer* renderer, const SDL_Rect& rect, const SDL_Color& color, const SDL_Color& border_color, int r) {
     SDL_Rect core { rect.x + r, rect.y + r, rect.w - 2*r, rect.h - 2*r };
@@ -29,14 +28,12 @@ void drawRoundedRect(SDL_Renderer* renderer, const SDL_Rect& rect, const SDL_Col
     if(r > 8)
         r = 8;
     if(shadow) {
-        // drawRoundedRect(renderer, {rect.x - static_cast<int>(rect.w/10), rect.y - static_cast<int>(rect.h/20), rect.w, rect.h}, {0, 0, 0, 200}, {0, 0, 0, 0}, r, false);
         drawRoundedRect(renderer, {rect.x - 10, rect.y + 10, rect.w, rect.h}, {0, 0, 0, 100}, {0, 0, 0, 0}, r, false);
     }
     drawBaseRects(renderer, rect, color, border_color, r);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
     auto drawPoints = [renderer, rect, color, border_color, r](int r_x, int r_y) {
-        // std::cout << "Call to drawPoints:\t" << r_x << "\t" << r_y << "\n";
         SDL_RenderDrawPoint(renderer, rect.x + rect.w - r + r_x, rect.y + r - r_y - 1);         // FIRST QUADRANT
         SDL_RenderDrawPoint(renderer, rect.x + r - r_x - 1, rect.y + r  - r_y - 1);             // SECOND QUADRANT
         SDL_RenderDrawPoint(renderer, rect.x + r - r_x - 1, rect.y + rect.h - r + r_y);         // THIRD QUADRANT
@@ -56,7 +53,6 @@ void drawCutRect(SDL_Renderer* renderer, const SDL_Rect& rect, const SDL_Color& 
     drawBaseRects(renderer, rect, color, border_color, r);
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     auto drawPoints = [renderer, rect, color, border_color, r](int r_x, int r_y) {
-        // std::cout << "Call to drawPoints:\t" << r_x << "\t" << r_y << "\n";
         SDL_RenderDrawPoint(renderer, rect.x + rect.w - r + r_x, rect.y + r - r_y - 1);             // FIRST QUADRANT
         SDL_RenderDrawPoint(renderer, rect.x + r - r_x - 1, rect.y + r  - r_y - 1);                      // SECOND QUADRANT
         SDL_RenderDrawPoint(renderer, rect.x + r - r_x - 1, rect.y + rect.h - r + r_y);             // THIRD QUADRANT

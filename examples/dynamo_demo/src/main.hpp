@@ -10,7 +10,6 @@
 #include <chrono>
 #include <thread>
 
-#include "utilities/circle.hpp"
 #include "ui/ui.hpp"
 
 #endif

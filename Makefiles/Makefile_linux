@@ -2,9 +2,9 @@ CC = g++
 CFLAGS = -std=c++17
 INCLUDE = `sdl2-config --cflags --libs`
 LINKER_FLAGS = -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -pthread
-LIB_GRAPH_SOURCES = $(patsubst %, graphics/%, graphics_context.cpp image.cpp rectangles.cpp text.cpp)
+LIB_GRAPH_SOURCES = $(shell ls src/graphics/*.cpp)
 LIB_GRAPH_OBJECT_FILES = $(shell basename -a ${LIB_GRAPH_SOURCES:.cpp=.o})
-LIB_UI_SOURCES = $(patsubst %, ui/%, text_box.cpp event.cpp button.cpp input_field.cpp layout.cpp menu.cpp pannel.cpp ui_element.cpp)
+LIB_UI_SOURCES = $(shell ls src/ui/*.cpp)
 LIB_UI_OBJECT_FILES = $(shell basename -a ${LIB_UI_SOURCES:.cpp=.o})
 TARGET = Tsukuyomi.a
 
