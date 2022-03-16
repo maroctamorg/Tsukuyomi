@@ -236,7 +236,7 @@ bool UI_Handler<Main, Overlay>::main() {
         }
 
         if(animation_handler->pending()) continue;
-        
+
         if(event_handler->main_input_handler->polling()) {
             event = event_handler->main_input_handler->pollEvent();
             customMainInputHandler(event, this->context, this->animation_handler, this->main_target, this->overlay);

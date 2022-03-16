@@ -2,6 +2,7 @@
 
 void Container::place(UI_Element* element, const SDL_Rect& rect) {
     // ui_element = std::move(element);
+    std::cout << "updating element position\n";
     SDL_Rect position { static_cast<int>(r_x*rect.w + rect.x), static_cast<int>(r_y*rect.h + rect.y), static_cast<int>(r_w*rect.w), static_cast<int>(r_h*rect.h) };
     element->updatePosition(position);
 }
@@ -67,6 +68,8 @@ Container Layout::getContainer(int index) {
     if(index < 0 || index >= containers.size()) return Container(0, 0, 0, 0);
     return containers.at(index);
 }
+
+// should be separated into addContainer, removeContainer and updateContainer
 void Layout::addContainer(int index, Container container) {
     if(index < 0) {
         std::cout << "Invalid index passed to addContainer call in Layout object...\n";
@@ -77,8 +80,9 @@ void Layout::addContainer(int index, Container container) {
         containers.at(index) = container;
     }
     else {
+        std::cout << "placing into new container\n";
         containers.at(index) = container;
-        if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect);
+        if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect); // this should not be done here, and rather in Layout::update to guarantee thread safety
     }
 }
 
@@ -91,6 +95,7 @@ void Layout::render() {
 void Layout::update() {
     for(int i = 0; i < ui_elements.size(); i++)
         if(ui_elements.at(i).get()) ui_elements.at(i)->update();
+    this->updateSize();
 }
 void Layout::updateSize() {
     // std::cout << "Call to update layout size...\n";

@@ -73,15 +73,15 @@ fi;
 
 make;
 
-if [[ choice -eq 0 ]]; then
-	sudo mkdir $INSTALL_PATH;
-	sudo cp build/Tsukuyomi.a "$INSTALL_PATH/";
-	sudo mkdir "$INSTALL_PATH/include";
-else
+# if [[ choice -eq 0 ]]; then
+# 	sudo mkdir $INSTALL_PATH;
+# 	sudo cp build/Tsukuyomi.a "$INSTALL_PATH/";
+# 	sudo mkdir "$INSTALL_PATH/include";
+# else
 	mkdir $INSTALL_PATH;
 	cp build/Tsukuyomi.a "$INSTALL_PATH/";
 	mkdir $INSTALL_PATH/include;
-fi;
+# fi;
 
 cd src/;
 find . -name '*.hpp' | cpio -updm $INSTALL_PATH/include/;

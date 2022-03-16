@@ -56,15 +56,18 @@ bool Animation_Handler::pending() const {
 void Animation_Handler::update() {
     // std::cout << "call to update...\n";
     std::map<uint, std::unique_ptr<Animation>>::iterator it {animations.begin()};
-    int del {0};
+    bool del {false};
     while(it != animations.end()) {
         // std::cout << "prepare for doom...\n";
         if(it->second->isActive()) it->second->next();
         else if (it->second->isDone()) {
-            if(!it->second->permanent) del = it->first;
+            if(!it->second->permanent) del = true;
             else it->second->reset();
         }
-        it++;
-        if(del > 0) animations.erase(del); // can I erase from inside the iterator loop?
+        if(del) {
+            it = animations.erase(it);
+            del = false;
+        }
+        else it++;
     }
 }

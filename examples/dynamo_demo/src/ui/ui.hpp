@@ -238,11 +238,13 @@ public:
     }
 };
 
-class Overlay_Show_Animation final : public Animation {
+class Overlay_HideShow_Animation final : public Animation {
 private:
-    const uint steps {10000};
+    const uint step {10};
+    float dw;
+    float dh;
     const int index;
-    int counter {0};
+    bool hide {true};
     Container final_pos;
     Container current;
     std::shared_ptr<Layout> layout;
@@ -250,63 +252,45 @@ private:
 public:
     void start() override {
         this->Animation::start();
-        final_pos = layout->getContainer(index);
-        current = final_pos;
-        current.r_w = final_pos.r_w / steps;
-        current.r_h = final_pos.r_h / steps;
-        layout->addContainer(index, current);
-        overlay->setHidden(false);
-        std::cout << "Started Show Overlay Animation...\n";
+        final_pos = layout->getContainer(index); //better just getting and updating the container size
+        hide = !overlay->getHidden();
+        dw = final_pos.r_w / 50;
+        dh = final_pos.r_h / 50;
+        if(hide) {
+            dw = -dw;
+            dh = -dh;
+            current = final_pos;
+            std::cout << "Started Hide Overlay Animation...\n";
+        } else {
+            current.r_x = 0;
+            current.r_y = 0;
+            current.r_w = dw;
+            current.r_h = dh;
+            layout->addContainer(index, current);
+            overlay->setHidden(false);
+            std::cout << "Started Show Overlay Animation...\n";
+        }
     }
     void next() override {
-        if(counter == steps) {
+        bool control = hide ? current.r_w <= -dw : current.r_w >= final_pos.r_w - dw;
+        if(control) {
+            if(hide) {
+                overlay->setHidden(true);
+                std::cout << "Ended Hide Overlay Animation...\n";
+            } else {
+                std::cout << "Ended Show Overlay Animation...\n";
+            }
             layout->addContainer(index, final_pos);
             end();
-            std::cout << "Ended Show Overlay Animation...\n";
-        } else if ((steps - counter) % 10 == 0) {
-            current.r_w = final_pos.r_w / ((steps - counter) / 10 + 1);
-            current.r_h = final_pos.r_h / ((steps - counter) / 10 + 1);
+        } else {
+            current.r_w += dw;
+            current.r_h += dh;
             layout->addContainer(index, current);
         }
-        counter++;
     }
 public:
-    Overlay_Show_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}
-    ~Overlay_Show_Animation() = default;
-};
-
-class Overlay_Hide_Animation final : public Animation {
-private:
-    const uint steps {10000};
-    const int index;
-    int counter {0};
-    Container final_pos;
-    Container current;
-    std::shared_ptr<Layout> layout;
-    std::shared_ptr<Overlay> overlay;
-public:
-    void start() override {
-        this->Animation::start();
-        final_pos = layout->getContainer(index);
-        current = final_pos;
-        std::cout << "Started Hide Overlay Animation...\n";
-    }
-    void next() override {
-        if(counter == steps) {
-            overlay->setHidden(true);
-            layout->addContainer(index, final_pos);
-            end();
-            std::cout << "Ended Hide Overlay Animation...\n";
-        } else if (counter % 10 == 0) {
-            current.r_w = final_pos.r_w / (counter / 10 + 1);
-            current.r_h = final_pos.r_h / (counter / 10 + 1);
-            layout->addContainer(index, current);
-        }
-        counter++;
-    }
-public:
-    Overlay_Hide_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}
-    ~Overlay_Hide_Animation() = default;
+    Overlay_HideShow_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}
+    ~Overlay_HideShow_Animation() = default;
 };
 
 #endif
