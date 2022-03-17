@@ -1,7 +1,7 @@
 CC = g++
-CFLAGS = -std=c++17
-INCLUDE = -I ${HOME}/Library/Tsukuyomi/include
-LINKER_FLAGS = -F /Library/Frameworks/ -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer ${HOME}/Library/Tsukuyomi/Tsukuyomi.a
+CFLAGS = -std=c++17 -Wno-switch
+INCLUDE = -I ${HOME}/Library/Tsukuyomi/include -F /Library/Frameworks -F ${HOME}/Library/Frameworks
+LINKER_FLAGS = -F /Library/Frameworks -F ${HOME}/Library/Frameworks -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer ${HOME}/Library/Tsukuyomi/Tsukuyomi.a
 SOURCES = main.cpp
 SOURCE_OBJECT_FILES = $(shell basename -a ${SOURCES:.cpp=.o})
 TARGET = dynamo_demo
