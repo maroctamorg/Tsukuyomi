@@ -17,7 +17,7 @@ enum class Y_POS {
 };
 
 class Container final {
-private:
+public:
     float r_x { 0 };
     float r_y { 0 };
     float r_w { 0 };
@@ -54,7 +54,7 @@ private:
     // std::vector<std::weak_ptr<UI_Element>> ui_elements;
 
 public:
-    Layout(std::shared_ptr<GraphicsContext> context, std::initializer_list<Container> list)
+    Layout(std::shared_ptr<Graphics_Context> context, std::initializer_list<Container> list)
         : UI_Element(context), containers(list) {
             if(this->rect.w == 0 || this->rect.h == 0)
                 this->rect = SDL_Rect({0, 0, this->context->getWidth(), this->context->getHeight()});
@@ -62,8 +62,12 @@ public:
 
     // Move constructor
 	Layout(Layout&& layout) noexcept
-		: UI_Element(layout.context, layout.rect, layout.texture)
+		: UI_Element(layout.context, layout.rect)
 	{
+        this->texture_path = layout.texture_path;
+        if(!this->texture_path.empty()) {
+            this->texture = loadTexture(this->context->renderer, this->texture_path);
+        }
         if(this->rect.w == 0 || this->rect.h == 0)
             this->rect = SDL_Rect({0, 0, this->context->getWidth(), this->context->getHeight()});
 
@@ -112,6 +116,13 @@ public:
     // void placeUI_Element(std::unique_ptr<UI_Element> element, int index);
     void placeUI_Element(std::shared_ptr<UI_Element> element, int index);
     void placeUI_Element(UI_Element* a_element, int index);
+
+    std::shared_ptr<UI_Element> getUIElement(int index);
+    Container getContainer(int index);
+    bool getContainerDimensions(int index, float& x, float& y, float& w, float& h);
+
+    void addContainer(Container container);
+    void updateContainer(int index, float x, float y, float w, float h);
 
     void render() override;
     void update() override;

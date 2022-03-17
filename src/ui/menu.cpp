@@ -4,7 +4,7 @@
 // int Menu::update() {
 //     if(layout)
 //         layout->update();
-//     return handler->PollEvent();
+//     return handler->pollEvent();
 // };
 
 void Menu::updateSize() {

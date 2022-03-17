@@ -4,12 +4,12 @@
 #include "extern_ui.hpp"
 
 class Layout;
-class EventHandler;
+class Event_Handler;
 
 class Menu final {
 private:
-    std::shared_ptr<GraphicsContext> context { nullptr };
-    std::shared_ptr<EventHandler> handler { nullptr };
+    std::shared_ptr<Graphics_Context> context { nullptr };
+    // std::shared_ptr<Event_Handler> handler { nullptr };
     std::shared_ptr<Layout> layout { nullptr };
 
     SDL_Texture* b_texture { nullptr };
@@ -17,18 +17,28 @@ private:
 
 public:
     // should be done with move semantics to transfer over ownership of UI_Elements
-    Menu(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::unique_ptr<Layout> layout, SDL_Texture* texture)
-        :   context(context), handler(handler), layout(std::move(layout)), b_texture {texture} {}
-    Menu(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::unique_ptr<Layout> layout, SDL_Color color)
-        :   context(context), handler(handler), layout(std::move(layout)), b_color {color} {}
+    // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::unique_ptr<Layout> layout, SDL_Texture* texture)
+        // :   context(context), handler(handler), layout(std::move(layout)), b_texture {texture} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::unique_ptr<Layout> layout, SDL_Texture* texture)
+        :   context(context), layout(std::move(layout)), b_texture {texture} {}
+    // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::unique_ptr<Layout> layout, SDL_Color color)
+        // :   context(context), handler(handler), layout(std::move(layout)), b_color {color} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::unique_ptr<Layout> layout, SDL_Color color)
+        :   context(context), layout(std::move(layout)), b_color {color} {}
 
-    Menu(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::shared_ptr<Layout> layout, SDL_Texture* texture)
-        :   context(context), handler(handler), layout(layout), b_texture {texture} {}
-    Menu(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, std::shared_ptr<Layout> layout, SDL_Color color)
-        :   context(context), handler(handler), layout(layout), b_color {color} {}
+    // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::shared_ptr<Layout> layout, SDL_Texture* texture)
+        // :   context(context), handler(handler), layout(layout), b_texture {texture} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Texture* texture)
+        :   context(context), layout(layout), b_texture {texture} {}
+    // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::shared_ptr<Layout> layout, SDL_Color color)
+        // :   context(context), handler(handler), layout(layout), b_color {color} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Color color)
+        :   context(context), layout(layout), b_color {color} {}
 
-    Menu(std::shared_ptr<GraphicsContext> context, std::shared_ptr<EventHandler> handler, Layout* layout, SDL_Color color)
-        :   context(context), handler(handler), layout{layout}, b_color {color} {}
+    // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, Layout* layout, SDL_Color color)
+        // :   context(context), handler(handler), layout{layout}, b_color {color} {}
+    Menu(std::shared_ptr<Graphics_Context> context, Layout* layout, SDL_Color color)
+        :   context(context), layout{layout}, b_color {color} {}
 
     ~Menu() {
         if(b_texture) {

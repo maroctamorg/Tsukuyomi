@@ -1,44 +1,89 @@
 #!/bin/bash
 
-SCRIPT=$(readlink "$0");
-SCRIPTPATH=$(dirname "$SCRIPT");
-cd ${SCRIPTPATH};
+# SCRIPT=$(readlink "$0");
+# SCRIPTPATH=$(dirname "$SCRIPT");
+# cd ${SCRIPTPATH};
 
-#Ask user if they would like a user or system installation
-echo -e "Choose:\n[0]\tsystem installation (requires super user privileges)\n[1]\tuser installation";
-read choice;
+# Ask user if they would like a user or system installation
+# echo -e "Choose:\n[0]\tsystem installation (requires super user privileges)\n[1]\tuser installation\n\n(*)Note: if performing a user installation, you may need to add the path '\${HOME}\Library\Frameworks' to the environment variable 'DYLD_FALLBACK_FRAMEWORK_PATH' (in case you encounter linker errors when executing the examples) \n\n";
+# read choice;
 
-if [[ choice -eq 0 ]]; then
-	INSTALL_PATHS=(/usr/local/lib/Tsukuyomi ${HOME}/Library/Tsukuyomi)
-	SDL_INSTALL_PATH=/Library/Frameworks/SDL2.framework
-elif [[ choice -eq 1 ]]; then
-	INSTALL_PATHS=(${HOME}/Library/Tsukuyomi)
-	SDL_INSTALL_PATH=${HOME}/Library/Frameworks/SDL2.framework
-else
-	echo "Please choose an appropriate installation (0 or 1)...";
-	exit $?;
-fi
+# if [[ choice -eq 0 ]]; then
+# 	INSTALL_PATH=/usr/local/lib/Tsukuyomi;
+# 	SDL_INSTALL_PATH=/Library/Frameworks;
+# elif [[ choice -eq 1 ]]; then
+	INSTALL_PATH=${HOME}/Library/Tsukuyomi;
+	SDL_INSTALL_PATH=${HOME}/Library/Frameworks;
+# else
+# 	echo "Please choose an appropriate installation (0 or 1)...";
+# 	exit $?;
+# fi;
 
 # must also look for audio and mixer frameworks
-if [[ !( -d ${HOME}/Library/Frameworks/SDL2.framework || -d /Library/Frameworks/SDL2.framework ) ]]; then
-	echo "SDL2 dependency not found, attempting install into" SDL_INSTALL_PATH;
-	wget "https://www.libsdl.org/release/SDL2-2.0.18.dmg";
-	hdiutil mount SDL2;
-	cp /Volumes/SDL2/SDL2.framework SDL_INSTALL_PATH;
-	hdiutil unmount /Volumes/SDL2 &
+if [[ !( -d "$SDL_INSTALL_PATH/SDL2.framework" ) ]]; then
+	echo "\nSDL2 dependency not found, attempting install into" $SDL_INSTALL_PATH;
+	curl "https://www.libsdl.org/release/SDL2-2.0.18.dmg" --output SDL2-2.0.18.dmg;
+	hdiutil mount SDL2-2.0.18.dmg &> /dev/null;
+	cp -r /Volumes/SDL2/SDL2.framework "$SDL_INSTALL_PATH/";
+	hdiutil unmount /Volumes/SDL2;
 	mv SDL2-2.0.18.dmg ${HOME}/Downloads;
-fi
+	echo -e "\nSDL2 installation successful!\n(moved SDL2 installer moved into ${HOME}/Downloads)\n\n";
+fi;
 
-cp Makefiles/Makefile_macOS Makefile;
+if [[ !( -d "$SDL_INSTALL_PATH/SDL2_image.framework" ) ]]; then
+	echo "\nSDL2-image dependency not found, attempting install into" $SDL_INSTALL_PATH;
+	curl "https://www.libsdl.org/projects/SDL_image/release/SDL2_image-2.0.5.dmg" --output SDL2_image-2.0.5.dmg;
+	hdiutil mount SDL2_image-2.0.5.dmg &> /dev/null;
+	cp -r /Volumes/SDL2_image/SDL2_image.framework "$SDL_INSTALL_PATH/";
+	hdiutil unmount /Volumes/SDL2_image;
+	mv SDL2_image-2.0.5.dmg ${HOME}/Downloads;
+	echo -e "\nSDL2-image installation successful!\n(moved SDL2-image installer moved into ${HOME}/Downloads)\n\n";
+fi;
+
+if [[ !( -d "$SDL_INSTALL_PATH/SDL2_ttf.framework" ) ]]; then
+	echo "\nSDL2-ttf dependency not found, attempting install into" $SDL_INSTALL_PATH;
+	curl "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-2.0.18.dmg" --output SDL2_ttf-2.0.18.dmg;
+	hdiutil mount SDL2_ttf-2.0.18.dmg &> /dev/null;
+	cp -r /Volumes/SDL2_ttf/SDL2_ttf.framework "$SDL_INSTALL_PATH/";
+	hdiutil unmount /Volumes/SDL2_ttf;
+	mv SDL2_ttf-2.0.18.dmg ${HOME}/Downloads;
+	echo -e "\nSDL2-ttf installation successful!\n(moved SDL2-ttf installer moved into ${HOME}/Downloads)\n\n";
+fi;
+
+if [[ !( -d "$SDL_INSTALL_PATH/SDL2_mixer.framework" ) ]]; then
+	echo "\nSDL2_mixer dependency not found, attempting install into" $SDL_INSTALL_PATH;
+	curl "https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.4.dmg" --output SDL2_mixer-2.0.4.dmg;
+	hdiutil mount SDL2_mixer-2.0.4.dmg &> /dev/null;
+	cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework "$SDL_INSTALL_PATH/";
+	hdiutil unmount /Volumes/SDL2_mixer;
+	mv SDL2_mixer-2.0.4.dmg ${HOME}/Downloads;
+	echo -e "\nSDL2_mixer installation successful!\n(moved SDL2_mixer installer moved into ${HOME}/Downloads)\n\n";
+fi;
+
+arch="$(uname -m)";
+ 
+if [ "${arch}" = "x86_64" ]; then
+	cp Makefiles/Makefile_macOS_x86_64 Makefile;
+elif [ "${arch}" = "arm64" ]; then
+	cp Makefiles/Makefile_macOS_arm Makefile;
+else
+    echo "Detected unsupported architecture: ${arch_name}, unable to build library;\n exiting...\n";
+	exit 1;
+fi;
+
 make;
-for path in ${INSTALL_PATHS[@]}; do
-	mkdir ${path};
-	cp build/Tsukuyomi.a ${path}/;
-	if [[ choice -eq 0 ]]; then
-		sudo mkdir ${path}/include;
-	else
-		mkdir ${path}/include;
-	fi
-	cp -r src/ ${path}/include/;
-	echo -e "Successful installation\nInstall location:" ${path};
-done
+
+# if [[ choice -eq 0 ]]; then
+# 	sudo mkdir $INSTALL_PATH;
+# 	sudo cp build/Tsukuyomi.a "$INSTALL_PATH/";
+# 	sudo mkdir "$INSTALL_PATH/include";
+# else
+	mkdir $INSTALL_PATH;
+	cp build/Tsukuyomi.a "$INSTALL_PATH/";
+	mkdir $INSTALL_PATH/include;
+# fi;
+
+cd src/;
+find . -name '*.hpp' | cpio -updm $INSTALL_PATH/include/;
+cd ../;
+echo -e "Successful installation\nInstall location:" $INSTALL_PATH;

@@ -3,6 +3,7 @@
 
 #include "extern.hpp"
 #include "rectangles.hpp"
+#include "circles.hpp"
 #include "image.hpp"
 #include "sound.hpp"
 #include "text.hpp"

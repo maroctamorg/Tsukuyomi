@@ -1,6 +1,6 @@
 #include "graphics_context.hpp"
 
-void GraphicsContext::Init_SDL()
+void Graphics_Context::Init_SDL()
 {
     //Initialize SDL
     if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
@@ -18,7 +18,7 @@ void GraphicsContext::Init_SDL()
         }
 
         //Create window
-        this->window = SDL_CreateWindow("PONG++", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->W_W, this->W_H, 0 | SDL_WINDOW_RESIZABLE);
+        this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->W_W, this->W_H, 0 | SDL_WINDOW_RESIZABLE);
         if( window == NULL )
         {
             printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -27,7 +27,7 @@ void GraphicsContext::Init_SDL()
         else
         {
             //Create renderer for window
-            this->renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+            this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
             if( renderer == NULL )
             {
                 printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -70,7 +70,7 @@ void GraphicsContext::Init_SDL()
     // return (window && renderer);
 }
 
-void GraphicsContext::Quit_SDL()
+void Graphics_Context::Quit_SDL()
 {
     //Destroy renderer and window
     SDL_DestroyRenderer( renderer );
@@ -89,14 +89,18 @@ void GraphicsContext::Quit_SDL()
     SDL_Quit();
 }
 
-int GraphicsContext::getWidth() { return W_W; }
-int GraphicsContext::getHeight() { return W_H; }
+int Graphics_Context::getWidth() { return W_W; }
+int Graphics_Context::getHeight() { return W_H; }
 
-void GraphicsContext::display() {
+void Graphics_Context::clear() {
+    SDL_RenderClear(this->renderer);
+}
+
+void Graphics_Context::display() {
     SDL_RenderPresent(this->renderer);
 }
 
-void GraphicsContext::updateWindowSize(int w, int h) {
+void Graphics_Context::updateWindowSize(int w, int h) {
     W_W = w;
     W_H = h;
 

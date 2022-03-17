@@ -5,6 +5,8 @@
 #include <utility>
 #include <memory>
 #include <vector>
+#include <map>
+#include <deque>
 #include <initializer_list>
 #include <functional>
 
