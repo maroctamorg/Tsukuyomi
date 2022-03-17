@@ -119,8 +119,10 @@ public:
 
     std::shared_ptr<UI_Element> getUIElement(int index);
     Container getContainer(int index);
-    // add or update container
-    void addContainer(int index, Container container);
+    bool getContainerDimensions(int index, float& x, float& y, float& w, float& h);
+
+    void addContainer(Container container);
+    void updateContainer(int index, float x, float y, float w, float h);
 
     void render() override;
     void update() override;

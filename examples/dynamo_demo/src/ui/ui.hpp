@@ -238,6 +238,10 @@ public:
     }
 };
 
+typedef struct rect {
+    float x, y, w, h;
+} rect_t;
+
 class Overlay_HideShow_Animation final : public Animation {
 private:
     const uint step {10};
@@ -245,34 +249,33 @@ private:
     float dh;
     const int index;
     bool hide {true};
-    Container final_pos;
-    Container current;
+    rect_t final_pos;
+    rect_t current;
     std::shared_ptr<Layout> layout;
     std::shared_ptr<Overlay> overlay;
 public:
     void start() override {
         this->Animation::start();
-        final_pos = layout->getContainer(index); //better just getting and updating the container size
+        layout->getContainerDimensions(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h); //better just getting and updating the container size
         hide = !overlay->getHidden();
-        dw = final_pos.r_w / 50;
-        dh = final_pos.r_h / 50;
+        dw = final_pos.w / 50;
+        dh = final_pos.h / 50;
         if(hide) {
             dw = -dw;
             dh = -dh;
             current = final_pos;
-            std::cout << "Started Hide Overlay Animation...\n";
         } else {
-            current.r_x = 0;
-            current.r_y = 0;
-            current.r_w = dw;
-            current.r_h = dh;
-            layout->addContainer(index, current);
+            current.x = 0;
+            current.y = 0;
+            current.w = 0;
+            current.h = 0;
+            layout->updateContainer(index, current.x, current.y, current.w, current.h);
             overlay->setHidden(false);
-            std::cout << "Started Show Overlay Animation...\n";
         }
+        printf("started %s animation with dw: %f, dh: %f", hide ? "hide" : "show", dw, dh);
     }
     void next() override {
-        bool control = hide ? current.r_w <= -dw : current.r_w >= final_pos.r_w - dw;
+        bool control = hide ? current.w <= -dw : current.w >= final_pos.w - dw;
         if(control) {
             if(hide) {
                 overlay->setHidden(true);
@@ -280,12 +283,12 @@ public:
             } else {
                 std::cout << "Ended Show Overlay Animation...\n";
             }
-            layout->addContainer(index, final_pos);
+            layout->updateContainer(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h);
             end();
         } else {
-            current.r_w += dw;
-            current.r_h += dh;
-            layout->addContainer(index, current);
+            current.w += dw;
+            current.h += dh;
+            layout->updateContainer(index, current.x, current.y, current.w, current.h);
         }
     }
 public:

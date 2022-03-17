@@ -68,23 +68,33 @@ Container Layout::getContainer(int index) {
     if(index < 0 || index >= containers.size()) return Container(0, 0, 0, 0);
     return containers.at(index);
 }
+bool Layout::getContainerDimensions(int index, float& x, float& y, float& w, float& h) {
+    if(index < 0 || index >= containers.size()) return false;
+    Container& container = containers.at(index);
+    container.r_x = x;
+    container.r_y = y;
+    container.r_w = w;
+    container.r_h = h;
+    return true;
+}
 
 // should be separated into addContainer, removeContainer and updateContainer
-void Layout::addContainer(int index, Container container) {
-    if(index < 0) {
-        std::cout << "Invalid index passed to addContainer call in Layout object...\n";
-        return;
-    }
-    else if(index >= containers.size()) {
-        containers.resize(index+1);
-        containers.at(index) = container;
-    }
-    else {
-        std::cout << "placing into new container\n";
-        containers.at(index) = container;
-        if(ui_elements.at(index).get()) containers.at(index).place(ui_elements.at(index).get(), this->rect); // this should not be done here, and rather in Layout::update to guarantee thread safety
+void Layout::addContainer(Container container) {
+    containers.push_back(container);
+}
+
+void Layout::updateContainer(int index, float x, float y, float w, float h) {
+    if(index >= 0 && index < containers.size()) {
+        Container& container = containers.at(index);
+        container.r_x = x;
+        container.r_y = y;
+        container.r_w = w;
+        container.r_h = h;
+        if(ui_elements.at(index).get()) container.place(ui_elements.at(index).get(), this->rect); // this should not be done here, and rather in Layout::update to guarantee thread safety
     }
 }
+
+// void Layout::removeContainer(int index) {}
 
 void Layout::render() {
     // std::cout << "##############\tCall to render Layout!\t##############";
@@ -95,7 +105,7 @@ void Layout::render() {
 void Layout::update() {
     for(int i = 0; i < ui_elements.size(); i++)
         if(ui_elements.at(i).get()) ui_elements.at(i)->update();
-    this->updateSize();
+    // this->updateSize();
 }
 void Layout::updateSize() {
     // std::cout << "Call to update layout size...\n";
