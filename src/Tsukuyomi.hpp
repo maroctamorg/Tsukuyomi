@@ -40,8 +40,8 @@ protected:
 
     std::deque<UPDATE_REQ> update_requests;
 
-    std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler;
-    std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler;
+    std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler;
+    std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler;
 
 public:
     bool done {true};
@@ -60,8 +60,8 @@ public:
     std::shared_ptr<Event_Handler> getEventHandler();
     std::shared_ptr<Graphics_Context> getGraphicsContext();
 
-    void registerCustomMainInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler);
-    void registerCustomOverlayInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler);
+    void registerCustomMainInputHandler(std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler);
+    void registerCustomOverlayInputHandler(std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler);
 public:
     virtual void update();
     virtual void updateRequest(UPDATE_REQ request);
@@ -80,11 +80,11 @@ UI_Handler<Main, Overlay>::UI_Handler(int W_W, int W_H, std::string Title, int r
 
             layout = std::make_shared<Layout>(context, std::initializer_list<Container>({Container(0, 0, 1, 1), Container(0, 0, 1, 1)}));
 
-            customMainInputHandler = [](Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
+            customMainInputHandler = [](Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
                 // std::cout << "No custom main input handler implemented...\n";
             };
 
-            customOverlayInputHandler = [](Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
+            customOverlayInputHandler = [](Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>){
                 // std::cout << "No custom overlay input handler implemented...\n";
             };
         }
@@ -146,12 +146,12 @@ std::shared_ptr<Graphics_Context> UI_Handler<Main, Overlay>::getGraphicsContext(
 }
 
 template <class Main, class Overlay>
-void UI_Handler<Main, Overlay>::registerCustomMainInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler) {
+void UI_Handler<Main, Overlay>::registerCustomMainInputHandler(std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customMainInputHandler) {
     this->customMainInputHandler = customMainInputHandler;
 }
 
 template <class Main, class Overlay>
-void UI_Handler<Main, Overlay>::registerCustomOverlayInputHandler(std::function<void(Event, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler) {
+void UI_Handler<Main, Overlay>::registerCustomOverlayInputHandler(std::function<void(Event_t, std::shared_ptr<Graphics_Context>, std::shared_ptr<Animation_Handler>, std::shared_ptr<Main>, std::shared_ptr<Overlay>)> customOverlayInputHandler) {
     this->customOverlayInputHandler = customOverlayInputHandler;
 }
 
@@ -205,7 +205,7 @@ bool UI_Handler<Main, Overlay>::main() {
     //     }
     // });
     double temp = 0;
-    Event event;
+    Event_t event;
     Timer rLoop;
     while(!done) {
         update();

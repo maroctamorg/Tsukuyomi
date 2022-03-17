@@ -22,7 +22,7 @@ public:
     void registerKeyCallback(std::function<void(SDL_Keycode)> callback);
     //the enum passed to the callback is 'event.key.keysym.sym', type <SDL_Keycode>
 
-    Event pollEvent();
+    Event_t pollEvent();
 
     // std::weak_ptr<Input_Handler> getMainInputHandler();
     // std::weak_ptr<Input_Handler> getOverlayInputHandler();

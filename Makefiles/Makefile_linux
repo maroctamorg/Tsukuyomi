@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++17
+CFLAGS = -std=c++17 -Wno-null-conversion
 INCLUDE = `sdl2-config --cflags --libs`
 LINKER_FLAGS = -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf -pthread
 LIB_GRAPH_SOURCES = $(shell ls src/graphics/*.cpp)

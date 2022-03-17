@@ -53,14 +53,14 @@ public:
     uint iterations {0};
     void render() override {
         UI_Element::render();
-        // SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
-        // for (int i{0}; i < 30; i++) {
-        //     drawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
-        //     fillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
-        //     for (int j{0}; j < node_arr[i].connections; j++) {
-        //         SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
-        //     }
-        // }
+        SDL_SetRenderDrawColor(context->renderer, UI::palette[1].r, UI::palette[1].g, UI::palette[1].b, UI::palette[1].a);
+        for (int i{0}; i < 30; i++) {
+            drawCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+            fillCircle(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, 2);
+            for (int j{0}; j < node_arr[i].connections; j++) {
+                SDL_RenderDrawLine(context->renderer, node_arr[i].pos.x, node_arr[i].pos.y, node_arr[i].edges[j]->pos.x, node_arr[i].edges[j]->pos.y);
+            }
+        }
     }
     void update() override {
         iterations++;
@@ -259,7 +259,7 @@ public:
     void start() override {
         this->Animation::start();
         layout->getContainerDimensions(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h); //better just getting and updating the container size
-        printf("obtained container %d dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
+        // printf("obtained container %d dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
         hide = !overlay->getHidden();
         dw = final_pos.w / 10;
         dh = final_pos.h / 10;
@@ -275,7 +275,7 @@ public:
             layout->updateContainer(index, current.x, current.y, current.w, current.h);
             overlay->setHidden(false);
         }
-        printf("started %s animation with dw: %f, dh: %f\n", hide ? "hide" : "show", dw, dh);
+        // printf("started %s animation with dw: %f, dh: %f\n", hide ? "hide" : "show", dw, dh);
     }
     void next() override {
         if(counter % step != 0) {
@@ -286,18 +286,18 @@ public:
         if(control) {
             if(hide) {
                 overlay->setHidden(true);
-                std::cout << "Ended Hide Overlay Animation...\n";
+                // std::cout << "Ended Hide Overlay Animation...\n";
             } else {
-                std::cout << "Ended Show Overlay Animation...\n";
+                // std::cout << "Ended Show Overlay Animation...\n";
             }
             layout->updateContainer(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h);
-            printf("updated container %d to dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
+            // printf("updated container %d to dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
             end();
         } else {
             current.w += dw;
             current.h += dh;
             layout->updateContainer(index, current.x, current.y, current.w, current.h);
-            printf("updated container %d to dimensions: %f, %f\n", index, current.w, current.h);
+            // printf("updated container %d to dimensions: %f, %f\n", index, current.w, current.h);
         }
         counter++;
     }

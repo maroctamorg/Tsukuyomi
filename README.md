@@ -43,9 +43,17 @@ cp installation_scripts/install_macOS.sh install.sh
 bash install.sh
 ```
 
-This will download and install the necessary SDL frameworks to ```${HOME}\Library\Frameworks\```, build a static library ```Tsukuyomi.a``` and install it (together with the header files) to ```${HOME}\Library\Tsukuyomi```
+This will download and install the necessary SDL frameworks to ```${HOME}/Library/Frameworks/```, build a static library ```Tsukuyomi.a``` and install it (together with the header files) to ```${HOME}/Library/Tsukuyomi```
 
-(*) *Note: you may need to add the path ```\${HOME}\Library\Frameworks``` to the environment variable ```DYLD_FALLBACK_FRAMEWORK_PATH``` (in case you encounter linker errors with SDL when executing the examples)*
+(*) *Note: on macOS, you may need to add the path ```${HOME}/Library/Frameworks``` to the shell variable ```DYLD_FALLBACK_FRAMEWORK_PATH``` (in case you encounter linker errors with SDL when executing the examples); if you do so, it might also be necessary to add paths ```/Library/Frameworks``` and ```/System/Library/Frameworks``` to the variable ```DYLD_FRAMEWORK_PATH``` in case they are not already present (you can check this by echoing the variable).*
+
+*For a single shell session, this may be achieved by issuing the following commands*
+```bash
+export DYLD_FALLBACK_FRAMEWORK_PATH=$DYLD_FALLBACK_FRAMEWORK_PATH:${HOME}/Library/Frameworks
+export DYLD_FRAMEWORK_PATH=$DYLD_FRAMEWORK_PATH:System/Library/Frameworks:/Library/Frameworks
+```
+
+This can be made persistent by adding the above lines to your shell profile (```${HOME}\.bashrc``` or ```${HOME}\.zshrc``` for bash and zsh respectively).
 
 **2. Downloading the latest pre-built release from GitHub**
 
@@ -80,7 +88,7 @@ In order to use the framework in your own apps, you must
 ```
 in your code; point the compiler to the include directory and link against the static library file ```Tsukuyomi.a``` and the SDL dependencies.
 
-The ```examples``` folder contains simple programs and makefiles that can be used as reference; you may test the correct installation of the library by building the example programs.
+The ```examples``` folder contains simple programs and makefiles that can be used as reference; you may test the correct installation of the library by building the example programs: there are makefiles provided both linking directly to the build output of the root project and to the standard installation of the library.
 
 <!-- License
 -------
