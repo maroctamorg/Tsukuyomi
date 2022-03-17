@@ -7,6 +7,10 @@
 //     return handler->pollEvent();
 // };
 
+void Menu::updatePosition(const SDL_Rect& rect) {
+    layout->updatePosition(rect);
+}
+
 void Menu::updateSize() {
     SDL_Rect w_rect{0, 0, this->context->getWidth(), this->context->getHeight()};
     layout->updatePosition(w_rect);

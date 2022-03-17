@@ -52,6 +52,7 @@ public:
 
 public:
     // int update();
+    void updatePosition(const SDL_Rect& rect);
     void updateSize();
 
     // void addUI_Element(UI_Element&& element, int position, X_POS x_pos, Y_POS y_pos) {

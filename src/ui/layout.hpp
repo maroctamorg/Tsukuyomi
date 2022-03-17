@@ -18,17 +18,17 @@ enum class Y_POS {
 
 class Container final {
 public:
-    float r_x { 0 };
-    float r_y { 0 };
-    float r_w { 0 };
-    float r_h { 0 };
+    double r_x { 0 };
+    double r_y { 0 };
+    double r_w { 0 };
+    double r_h { 0 };
     // X_POS x_pos { X_POS::CENTER };
     // Y_POS y_pos { Y_POS::CENTER };
     // UI_Element* ui_element { nullptr };
 
 public:
     Container() = default;
-    Container(float rx, float ry, float rw, float rh)
+    Container(double rx, double ry, double rw, double rh)
         : r_x{rx}, r_y{ry}, r_w{rw}, r_h{rh} {}
     // Container(int rx, int ry, int rw, int rh, X_POS xpos, Y_POS ypos, UI_Element* element)
     //     : r_x{rx}, r_y{ry}, r_w{rw}, r_h{rh}, x_pos{xpos}, y_pos{ypos}, ui_element{element} {
@@ -119,10 +119,10 @@ public:
 
     std::shared_ptr<UI_Element> getUIElement(int index);
     Container getContainer(int index);
-    bool getContainerDimensions(int index, float& x, float& y, float& w, float& h);
+    bool getContainerDimensions(int index, double& x, double& y, double& w, double& h);
 
     void addContainer(Container container);
-    void updateContainer(int index, float x, float y, float w, float h);
+    void updateContainer(int index, double x, double y, double w, double h);
 
     void render() override;
     void update() override;

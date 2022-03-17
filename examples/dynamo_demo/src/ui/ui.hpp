@@ -163,7 +163,8 @@ public:
     
     void updatePosition(const SDL_Rect& rect) override {
         // this->UI_Element::updatePosition(rect);
-        main->updateSize();
+        // main->updateSize();
+        main->updatePosition(rect);
     }
 
 public:
@@ -239,14 +240,15 @@ public:
 };
 
 typedef struct rect {
-    float x, y, w, h;
+    double x, y, w, h;
 } rect_t;
 
 class Overlay_HideShow_Animation final : public Animation {
 private:
+    uint counter {0};
     const uint step {10};
-    float dw;
-    float dh;
+    double dw;
+    double dh;
     const int index;
     bool hide {true};
     rect_t final_pos;
@@ -257,9 +259,10 @@ public:
     void start() override {
         this->Animation::start();
         layout->getContainerDimensions(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h); //better just getting and updating the container size
+        printf("obtained container %d dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
         hide = !overlay->getHidden();
-        dw = final_pos.w / 50;
-        dh = final_pos.h / 50;
+        dw = final_pos.w / 10;
+        dh = final_pos.h / 10;
         if(hide) {
             dw = -dw;
             dh = -dh;
@@ -272,9 +275,13 @@ public:
             layout->updateContainer(index, current.x, current.y, current.w, current.h);
             overlay->setHidden(false);
         }
-        printf("started %s animation with dw: %f, dh: %f", hide ? "hide" : "show", dw, dh);
+        printf("started %s animation with dw: %f, dh: %f\n", hide ? "hide" : "show", dw, dh);
     }
     void next() override {
+        if(counter % step != 0) {
+            counter++;
+            return;
+        }
         bool control = hide ? current.w <= -dw : current.w >= final_pos.w - dw;
         if(control) {
             if(hide) {
@@ -284,12 +291,15 @@ public:
                 std::cout << "Ended Show Overlay Animation...\n";
             }
             layout->updateContainer(index, final_pos.x, final_pos.y, final_pos.w, final_pos.h);
+            printf("updated container %d to dimensions: %f, %f\n", index, final_pos.w, final_pos.h);
             end();
         } else {
             current.w += dw;
             current.h += dh;
             layout->updateContainer(index, current.x, current.y, current.w, current.h);
+            printf("updated container %d to dimensions: %f, %f\n", index, current.w, current.h);
         }
+        counter++;
     }
 public:
     Overlay_HideShow_Animation(std::shared_ptr<Overlay> overlay, std::shared_ptr<Layout> layout, int index) : Animation(true, true), layout{layout}, index{index}, overlay{overlay} {}

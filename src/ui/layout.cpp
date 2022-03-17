@@ -2,7 +2,7 @@
 
 void Container::place(UI_Element* element, const SDL_Rect& rect) {
     // ui_element = std::move(element);
-    std::cout << "updating element position\n";
+    // std::cout << "updating element position\n";
     SDL_Rect position { static_cast<int>(r_x*rect.w + rect.x), static_cast<int>(r_y*rect.h + rect.y), static_cast<int>(r_w*rect.w), static_cast<int>(r_h*rect.h) };
     element->updatePosition(position);
 }
@@ -68,13 +68,12 @@ Container Layout::getContainer(int index) {
     if(index < 0 || index >= containers.size()) return Container(0, 0, 0, 0);
     return containers.at(index);
 }
-bool Layout::getContainerDimensions(int index, float& x, float& y, float& w, float& h) {
+bool Layout::getContainerDimensions(int index, double& x, double& y, double& w, double& h) {
     if(index < 0 || index >= containers.size()) return false;
-    Container& container = containers.at(index);
-    container.r_x = x;
-    container.r_y = y;
-    container.r_w = w;
-    container.r_h = h;
+    x = containers.at(index).r_x;
+    y = containers.at(index).r_y;
+    w = containers.at(index).r_w;
+    h = containers.at(index).r_h;
     return true;
 }
 
@@ -83,7 +82,7 @@ void Layout::addContainer(Container container) {
     containers.push_back(container);
 }
 
-void Layout::updateContainer(int index, float x, float y, float w, float h) {
+void Layout::updateContainer(int index, double x, double y, double w, double h) {
     if(index >= 0 && index < containers.size()) {
         Container& container = containers.at(index);
         container.r_x = x;
