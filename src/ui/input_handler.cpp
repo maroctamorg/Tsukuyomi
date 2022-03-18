@@ -104,8 +104,8 @@ void Input_Handler::quit() {
     event.char_input = NULL;
 }
 
-Event Input_Handler::pollEvent() {
-    Event buffer = this->event;
+Event_t Input_Handler::pollEvent() {
+    Event_t buffer = this->event;
     
     // clear event
     b_pressed = nullptr;

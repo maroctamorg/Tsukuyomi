@@ -16,11 +16,11 @@ enum class EVENT_TYPES {
     RESIZE = 5,
 };
 
-typedef struct {
+typedef struct Event{
     EVENT_TYPES type { EVENT_TYPES::NO_EVENT };
     int button_id { -1 };
     char char_input;
-} Event;
+} Event_t;
 
 class Input_Handler {
 private:
@@ -30,7 +30,7 @@ private:
     std::vector<Button*> buttons;
     Button* b_pressed { nullptr };
 
-    Event event;
+    Event_t event;
 
 private:
     inline void releaseButtons() {
@@ -125,7 +125,7 @@ public:
     void resize();
     void quit();
 
-    Event pollEvent();
+    Event_t pollEvent();
 
     std::vector<Button*> getSelectedButtons();
     Input_Field* getSelectedInputField();
