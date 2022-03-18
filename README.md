@@ -21,7 +21,7 @@ Dependencies
 ----------------------
 Support
 ------------
-Due to issues in linking with the SDL_image and SDL_mixer frameworks, the library does not yet run natively on apple silicon; see examples for cross-compilation to x86_64 on arm macs.
+Due to issues in linking with the SDL_image and SDL_mixer frameworks, the library does not yet run natively on apple silicon; the provided Makefile cross-compiles to x86_64 which can then be run via Rosetta2 translation; see examples for cross-compilation to x86_64 on arm macs.
 
 It should be straightforward to port it to other platforms, such as iOS, Windows, etc...; this will be done in the future.
 
@@ -80,7 +80,17 @@ In order to use the framework in your own apps, you must
 ```
 in your code; point the compiler to the include directory and link against the static library file ```Tsukuyomi.a``` and the SDL dependencies.
 
-The ```examples``` folder contains simple programs and makefiles that can be used as reference; you may test the correct installation of the library by building the example programs.
+The ```examples``` folder contains simple programs and makefiles that can be used as reference; you may test the correct installation of the library by building the sample programs.
+
+These are mostly meant as tests however; for an example of an actual application, check the (work-in-progress) repository: https://github.com/maroctamorg/Pong.
+
+----------------------
+Notes
+------------
+
+This library is still in early development and not fit for distribution, significant refactorings are expected and documentation is not yet available.
+
+If you'd like to contribute or are simply curious, check out the TODO.md document and feel free to reach out to my email guimaraesneto.marcelo@gmail.com.
 
 <!-- License
 -------
