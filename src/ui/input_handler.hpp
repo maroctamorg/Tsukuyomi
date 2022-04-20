@@ -4,35 +4,20 @@
 #include "extern_ui.hpp"
 #include "input_field.hpp"
 #include "button.hpp"
-
-enum class EVENT_TYPES {
-    UNHANDLED_SDL_EVENT = -2,
-    QUIT = -1,
-    NO_EVENT = 0,
-    CLICK = 1,
-    BUTTON_PRESS = 2,
-    KEY_DOWN = 3,
-    CHAR_INPUT = 4,
-    RESIZE = 5,
-};
-
-typedef struct Event{
-    EVENT_TYPES type { EVENT_TYPES::NO_EVENT };
-    int button_id { -1 };
-    char char_input;
-} Event_t;
+#include "default_events.hpp"
 
 class Input_Handler {
-private:
+protected:
     bool listening {true};
     // Menu* menu { nullptr };
     std::vector<Input_Field*> input_fields;
     std::vector<Button*> buttons;
     Button* b_pressed { nullptr };
 
-    Event_t event;
-
 private:
+    DEFEvent event;
+
+protected:
     inline void releaseButtons() {
         for (int i{0}; i < buttons.size(); i++) {
             // button->dettachHandler();
@@ -125,7 +110,7 @@ public:
     void resize();
     void quit();
 
-    Event_t pollEvent();
+    virtual DEFEvent pollEvent();
 
     std::vector<Button*> getSelectedButtons();
     Input_Field* getSelectedInputField();
@@ -135,5 +120,29 @@ public:
     void removeButtonFromHandler(int id);
     void removeInputFieldFromHandler(int id);
 };
+
+template <typename Event>
+class Custom_Input_Handler final : public Input_Handler {
+    static_assert(std::is_base_of<DEFEvent, Event>::value, "Custom event type must derive from DEFEvent");
+private:
+    Event custom_event;
+
+public:
+    Custom_Input_Handler() = default;
+    // standard copy and assignments are sufficient since input_handler does not own the buttons
+    // and fields which are registered with it (it does not delete them, ever)
+
+public:
+    Event pollEvent() override;
+};
+
+
+template <typename Event>
+Event Custom_Input_Handler<Event>::pollEvent() {
+    Event buffer = this->custom_event;
+    
+    buffer = Event(); // clear Event
+    return buffer;
+}
 
 #endif

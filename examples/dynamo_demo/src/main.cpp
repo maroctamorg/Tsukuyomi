@@ -4,7 +4,7 @@
 int main() {
 
     //define UI_Handler
-    auto handler = std::make_unique<UI_Handler<Dynamics, Overlay>>(UI::W_W, UI::W_H, "Dynamo Demo");
+    auto handler = std::make_unique<UI_Handler>(UI::W_W, UI::W_H, "Dynamo Demo");
 
     std::cout << "Defined UI_Handler...\n";
 
@@ -27,9 +27,9 @@ int main() {
     //setup event-handling and callbacks
     std::cout << "Setting up event-handling and callbacks...\n";
     uint hideshow_a_id = a_handler->add(std::make_unique<Overlay_HideShow_Animation>(overlay, handler->getLayout(), 1));
-    std::weak_ptr<Overlay> ptr_overlay {overlay};
-    e_handler->registerKeyCallback([ptr_overlay, a_handler, hideshow_a_id](SDL_Keycode keycode){
-        if(keycode == SDLK_TAB) a_handler->start(hideshow_a_id);
+    e_handler->registerKeyCallback(SDLK_TAB, [a_handler, hideshow_a_id](){
+        a_handler->start(hideshow_a_id);
+        return DEFEvent({EVENT_TYPES::CUSTOM_EVENT, -1, NULL});
     });
 
     try {

@@ -13,7 +13,7 @@ int main() {
     std::shared_ptr<Event_Handler> handler { std::make_shared<Event_Handler>() };
     std::shared_ptr<Menu> test_menu = Test_Menu::construct(g_context, handler);
 
-    Event_t event;
+    Event event;
     bool menu_done { false };
     int c_counter { 0 };
     while(!menu_done) {

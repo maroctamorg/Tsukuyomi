@@ -24,7 +24,7 @@ SDL_Point UI_Element::getPosition() { return SDL_Point{rect.x, rect.y}; }
 void UI_Element::setPosition(int x, int y) { rect.x = x; rect.y = y; }
 
 void UI_Element::render() {
-    if (hidden) return;
+    if(hidden) return;
     if(texture) {
         // std::cout << "Call to yet to be implemented render texture in UI_Element render!\n";
         // TO BE IMPLEMENTED!

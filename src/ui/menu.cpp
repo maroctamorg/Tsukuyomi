@@ -22,9 +22,18 @@ void Menu::updateSize() {
 // }
 
 void Menu::render() {
-    if(b_texture)
-        //YET TO BE IMPLEMENTED RENDER_TEXTURE
-        std::cout << "!!!!!!!!!!!!!!!!\tCall to yet to be implemented render background texture in render Menu\t!!!!!!!!!!!!!!!!\n";
+    if(b_texture) {
+        // std::cout << "Call to yet to be implemented render texture in UI_Element render!\n";
+        // TO BE IMPLEMENTED!
+        int texW = 0;
+        int texH = 0;
+        SDL_QueryTexture(b_texture, NULL, NULL, &texW, &texH);
+        SDL_Rect src_rect   {0, 0, texW, texH};
+
+        SDL_Rect target_rect {0, 0, context->getWidth(), context->getHeight()};
+
+        SDL_RenderCopy(context->renderer, b_texture, &src_rect, &target_rect);
+    }
         // SDL_RenderTexture(context->renderer, b_texture);
     else if(b_color.a != 0) {
         SDL_SetRenderDrawColor(context->renderer, b_color.r, b_color.g, b_color.b, b_color.a);

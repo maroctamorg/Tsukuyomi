@@ -13,14 +13,18 @@
 // }
 
 void Input_Handler::resume()    {   this->listening = true;     }
+
 void Input_Handler::pause()     {   this->listening = false;    }
+
 bool Input_Handler::polling()   {   return this->listening;     };
+
 
 void Input_Handler::registerButtonToHandler(Button* button) {
     if(button)
         buttons.push_back(button);
     // std::cout << "Registered button to Handler! Id: " << this->buttons.back()->getId() << "\n";
 }
+
 void Input_Handler::registerInputFieldToHandler(Input_Field* input_field) {
     if(input_field)
         input_fields.push_back(input_field);
@@ -104,8 +108,8 @@ void Input_Handler::quit() {
     event.char_input = NULL;
 }
 
-Event_t Input_Handler::pollEvent() {
-    Event_t buffer = this->event;
+DEFEvent Input_Handler::pollEvent() {
+    DEFEvent buffer = this->event;
     
     // clear event
     b_pressed = nullptr;
@@ -119,12 +123,14 @@ Event_t Input_Handler::pollEvent() {
 // std::vector<Button*> Input_Handler::getSelectedButtons() {
 //     return b_pressed;
 // }
+
 std::vector<Button*> Input_Handler::getSelectedButtons() {
     std::vector<Button*> selected;
     for (const auto button : buttons)
         if(button->isSelected()) selected.push_back(button);
     return selected;
 }
+
 Input_Field* Input_Handler::getSelectedInputField() {
     for (const auto input_field : input_fields)
         if(input_field->isSelected()) return input_field;
@@ -160,13 +166,14 @@ std::vector<int> Input_Handler::getSelectedButtonIds() {
 // }
 
 void Input_Handler::removeButtonFromHandler(int id) {
-    std::cout << "Call to removeButtonFromHandler!\n";
+    // std::cout << "Call to removeButtonFromHandler!\n";
     int i = this->getButtonIndexById(id);
     if(i < 0) return;
     buttons.at(i) = nullptr;
     this->dropButton(i);
-    std::cout << "Returned from call to removeButtonFromHandler!\n";
+    // std::cout << "Returned from call to removeButtonFromHandler!\n";
 }
+
 void Input_Handler::removeInputFieldFromHandler(int id) {
     // std::cout << "Call to removeInputFieldFromHandler!\n";
     int i = this->getInputFieldIndexById(id);

@@ -12,6 +12,7 @@ private:
     // std::shared_ptr<Event_Handler> handler { nullptr };
     std::shared_ptr<Layout> layout { nullptr };
 
+    std::string texture_path;
     SDL_Texture* b_texture { nullptr };
     SDL_Color b_color { 0, 0, 0, 0 };
 
@@ -19,8 +20,11 @@ public:
     // should be done with move semantics to transfer over ownership of UI_Elements
     // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::unique_ptr<Layout> layout, SDL_Texture* texture)
         // :   context(context), handler(handler), layout(std::move(layout)), b_texture {texture} {}
-    Menu(std::shared_ptr<Graphics_Context> context, std::unique_ptr<Layout> layout, SDL_Texture* texture)
-        :   context(context), layout(std::move(layout)), b_texture {texture} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::unique_ptr<Layout> layout, std::string texture)
+        :   context(context), layout(std::move(layout)), texture_path {texture} {
+            b_texture = loadTexture(context->renderer, texture_path);
+            if(!b_texture) std::cout << "Texture could not be loaded in Menu...\n";
+        }
     // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::unique_ptr<Layout> layout, SDL_Color color)
         // :   context(context), handler(handler), layout(std::move(layout)), b_color {color} {}
     Menu(std::shared_ptr<Graphics_Context> context, std::unique_ptr<Layout> layout, SDL_Color color)
@@ -28,8 +32,11 @@ public:
 
     // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::shared_ptr<Layout> layout, SDL_Texture* texture)
         // :   context(context), handler(handler), layout(layout), b_texture {texture} {}
-    Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Texture* texture)
-        :   context(context), layout(layout), b_texture {texture} {}
+    Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, std::string texture)
+        :   context(context), layout(layout), texture_path {texture} {
+            b_texture = loadTexture(context->renderer, texture_path);
+            if(!b_texture) std::cout << "Texture could not be loaded in Menu...\n";
+        }
     // Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Event_Handler> handler, std::shared_ptr<Layout> layout, SDL_Color color)
         // :   context(context), handler(handler), layout(layout), b_color {color} {}
     Menu(std::shared_ptr<Graphics_Context> context, std::shared_ptr<Layout> layout, SDL_Color color)
